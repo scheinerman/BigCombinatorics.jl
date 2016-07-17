@@ -3,7 +3,9 @@ module SimpleCombinatorics
 using Memoize
 
 export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
-export Derangements, MultiChoose, Bell, Stirling1, Stirling2
+export Derangements, MultiChoose, Multinomial
+export Bell, Stirling1, Stirling2
+export IntPartitions
 
 
 @memoize function Fibonacci(n::Integer)
@@ -84,6 +86,25 @@ end
 This is the number of `k`-element subsets of an `n`-element set.
 """ Binomial
 
+"""
+`Multinomial(vals)` returns the multinomial coefficient.
+The argument `vals` may either be a vector of nonnegative integers
+or this may also be called with comma separated values.
+"""
+function Multinomial{T<:Integer}(row::Vector{T})
+  if any([k<0 for k in row])
+    throw(DomainError())
+  end
+  n = sum(row)
+  top = Factorial(n)
+  bot = prod( [Factorial(k) for k in row])
+  return div(top,bot)
+end
+
+function Multinomial(x...)
+  xx = [t for t in x]
+  return Multinomial(xx)
+end
 
 """
 `MultiChoose(n,k)` returns the number of `k`-element
@@ -197,6 +218,45 @@ end
 of the first kind, that is, the coefficient of `x^k`
 in the poynomial `x(x-1)(x-2)...(x-n+1)`.
 """ Stirling1
+
+
+
+
+@memoize function IntPartitions(n::Integer,k::Integer)
+  if n<0 || k<0
+    throw(DomainError())
+  end
+  # lots of special cases
+  if k>n
+    return big(0)
+  end
+  if n==0
+    return big(1)
+  end
+  if k==0
+    return big(0)
+  end
+  if k==n || k==1
+    return big(1)
+  end
+
+  return sum([IntPartitions(n-k,i) for i=0:k])
+end
+
+@memoize function IntPartitions(n::Integer)
+  return sum([IntPartitions(n,k) for k=0:n])
+end
+
+@doc """
+`IntPartitions(n)` is the number of partitions of the integer `n`.
+
+`IntPartitions(n,k)` is the number of partitions of the integer
+`n` with exactly `k` (nonzero) parts.
+""" IntPartitions
+
+
+
+################ EXTRAS FOR DEBUGGING ####################
 
 """
 Common code for the two Stirling matrix functions.

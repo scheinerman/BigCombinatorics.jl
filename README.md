@@ -21,6 +21,12 @@ of an `n`-element set.
 + `MultiChoose(n,k)` returns the number of `k`-element
 *multisets* that can be formed using the elements of
 an `n`-element set.
++ `Multnomial(vals)` returns the multinomial coefficient where
+the top index is the sum of `vals`. Here, `vals` may either be a
+vector of integers or a comma separated list of arguments.
+In other words, both `Multinomial([3,3,3])` and `Multinomial(3,3,3)`
+return the multinomial coefficient with top index `9` and bottom
+indices `3,3,3`. The result is `1680`.
 + `Bell(n)` returns the `n`-th Bell number, i.e., the number
 of partitions of an `n`-element set.
 + `Stirling1(n,k)` returns the *signed* Stirling number of the
@@ -30,6 +36,9 @@ kind, i.e., the number of partitions of an `n`-element set into
 `k`-parts (nonempty).
 + `Fibonacci(n)` returns the `n`-th Fibonacci number
 with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
++ `IntPartitions(n)` returns the number of partitions of the integer `n`.
++ `IntPartitions(n,k)` returns the number of partitions of the integer
+`n` with exactly `k` parts.
 
 
 ## Implementation
@@ -56,5 +65,5 @@ true
 
 ## TODO
 
-+ Multinomial coefficients
-+ Integer partition counts
++ `Multinomial`  is working, but relies on factorials.
+Need a more efficient, memoized implementation.
