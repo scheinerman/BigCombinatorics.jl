@@ -87,30 +87,45 @@ This is the number of `k`-element subsets of an `n`-element set.
 """ Binomial
 
 """
-`Multinomial(vals)` returns the multinomial coefficient.
-The argument `vals` may either be a vector of nonnegative integers
-or this may also be called with comma separated values.
+`Multinomial(vec)` returns the multinomial coefficient whose
+top index is the sum of `vec` (an array of `Int`s) and whose
+bottom indices are given by `vec`.
+
+This may also be called with a common-separated list of arguments,
+that is, either of `Multinomial([1,2,3])` or `Multinomial(1,2,3)`.
+The result is `60` in both cases as these equal `6!/(1! 2! 3!)`.
+
+**Warning**: This is not the same as `MultiChoose`.
 """
-function Multinomial{T<:Integer}(row::Vector{T})
-  if any([k<0 for k in row])
-    throw(DomainError())
-  end
-  n = sum(row)
-  top = Factorial(n)
-  bot = prod( [Factorial(k) for k in row])
-  return div(top,bot)
+function Multinomial(v...)
+  vals = [t for t in v]
+  return Multinomial(vals)
 end
 
-function Multinomial(x...)
-  xx = [t for t in x]
-  return Multinomial(xx)
+Multinomial() = big(1)
+
+function Multinomial(vals::Vector{Int})
+  if any([t<0 for t in vals])
+    throw(DomainError())
+  end
+
+  nv = length(vals)
+  n  = sum(vals)
+  # base cases
+  if nv<=1 || n==0
+    return big(1)
+  end
+  # reduce
+  return Binomial(n,vals[end]) * Multinomial(vals[1:nv-1])
 end
+
 
 """
 `MultiChoose(n,k)` returns the number of `k`-element
 *multisets* that can be formed using the elements of an
-`n`-element set. (Not to be confused with multinomial
-coefficients).
+`n`-element set.
+
+**Warning**: This is not the same as `Multinomial`.
 """
 function MultiChoose(n::Integer,k::Integer)
   return Binomial(n+k-1,k)

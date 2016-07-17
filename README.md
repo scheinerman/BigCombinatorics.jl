@@ -8,7 +8,6 @@ with a capital letter.
 
 ## The functions
 
-Use Julia's help utility for more detail on all of these.
 
 + `Factorial(n)` returns `n!`.
 + `Factorial(n,k)` returns `n!/(n-k)!`.
@@ -20,13 +19,15 @@ an `n`-element set.
 of an `n`-element set.
 + `MultiChoose(n,k)` returns the number of `k`-element
 *multisets* that can be formed using the elements of
-an `n`-element set.
+an `n`-element set. **Warning**: This is not the same
+as `Multinomial`.
 + `Multnomial(vals)` returns the multinomial coefficient where
 the top index is the sum of `vals`. Here, `vals` may either be a
 vector of integers or a comma separated list of arguments.
 In other words, both `Multinomial([3,3,3])` and `Multinomial(3,3,3)`
 return the multinomial coefficient with top index `9` and bottom
-indices `3,3,3`. The result is `1680`.
+indices `3,3,3`. The result is `1680`. **Warning**: This is
+not the same as `MultiChoose`.
 + `Bell(n)` returns the `n`-th Bell number, i.e., the number
 of partitions of an `n`-element set.
 + `Stirling1(n,k)` returns the *signed* Stirling number of the
@@ -62,8 +63,3 @@ elapsed time: 0.066950058 seconds
 julia> e1==e2
 true
 ```
-
-## TODO
-
-+ `Multinomial`  is working, but relies on factorials.
-Need a more efficient, memoized implementation.
