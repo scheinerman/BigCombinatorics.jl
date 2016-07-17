@@ -2,7 +2,8 @@ module SimpleCombinatorics
 
 using Memoize
 
-export Fibonacci, Factorial, Binomial, Bell, Stirling1, Stirling2
+export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
+export Derangements, MultiChoose, Bell, Stirling1, Stirling2
 
 
 @memoize function Fibonacci(n::Integer)
@@ -31,9 +32,39 @@ We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
   end
   return n * Factorial(n-1)
 end
+
+@memoize function Factorial(n::Integer,k::Integer)
+  if n<0 || k<0
+    throw(DomainError())
+  end
+  if k>n
+    return big(0)
+  end
+  if k==0
+    return big(1)
+  end
+  return n*Factorial(n-1,k-1)
+end
 @doc """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
+
+`Factorial(n,k)` returns `n*(n-1)*...*(n-k+1)`.
 """ Factorial
+
+
+@memoize function DoubleFactorial(n::Integer)
+  if n<0
+    throw(DomainError())
+  end
+  if n==0 || n==1
+    return big(1)
+  end
+  return n*DoubleFactorial(n-2)
+end
+@doc """
+`DoubleFactorial(n)` returns `n!!`, i.e.,
+`n*(n-2)*...` with `0!! == 1!! == 1`.
+""" DoubleFactorial
 
 @memoize function Binomial(n::Integer, k::Integer)
   if n<0 || k<0
@@ -50,7 +81,45 @@ end
 end
 @doc """
 `Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
+This is the number of `k`-element subsets of an `n`-element set.
 """ Binomial
+
+
+"""
+`MultiChoose(n,k)` returns the number of `k`-element
+*multisets* that can be formed using the elements of an
+`n`-element set. (Not to be confused with multinomial
+coefficients).
+"""
+function MultiChoose(n::Integer,k::Integer)
+  return Binomial(n+k-1,k)
+end
+
+
+"""
+`Catalan(n)` returns the `n`-th Catalan number.
+"""
+function Catalan(n::Integer)
+  return div(Binomial(2n,n),n+1)
+end
+
+
+@memoize function Derangements(n::Integer)
+  if n<0
+    throw(DomainError())
+  end
+  if n==0
+    return big(1)
+  end
+  if n==1
+    return big(0)
+  end
+
+  return (n-1)*(Derangements(n-1)+Derangements(n-2))
+end
+
+
+
 
 @memoize function Bell(n)
   if n<0
