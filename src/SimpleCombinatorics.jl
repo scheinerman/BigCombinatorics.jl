@@ -5,7 +5,7 @@ using Memoize
 export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
 export Bell, Stirling1, Stirling2
-export IntPartitions, Euler
+export IntPartitions, Euler, PowerSum
 
 
 @memoize function Fibonacci(n::Integer)
@@ -42,7 +42,7 @@ end
   if k>n
     return big(0)
   end
-  if k==0
+  if k <= 1
     return big(1)
   end
   return n*Factorial(n-1,k-1)
@@ -72,6 +72,7 @@ end
   if n<0 || k<0
     throw(DomainError())
   end
+  # base cases
   if k>n
     return big(0)
   end
@@ -79,6 +80,15 @@ end
     return big(1)
   end
 
+  # speed up tricks
+  if k==1 || k==n-1
+    return big(n)
+  end
+  if 2k>n
+    return Binomial(n,n-k)
+  end
+
+  # invoke recursion
   return Binomial(n-1,k-1)+Binomial(n-1,k)
 end
 @doc """
@@ -307,6 +317,28 @@ this is the sequence
 1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
 """ Euler
 
+@memoize function PowerSum(n::Integer, k::Integer)
+  (n>=0 && k>=0) || throw(DomainError())
+  # Base and special cases
+  if n==0
+    return big(0)
+  end
+  if k==0
+    return big(n)
+  end
+  if k==1
+    return Binomial(n,2)
+  end
 
+  # recursion
+  return big(n)^k + PowerSum(n-1,k)
+end
+@doc """
+`PowerSum(n,k)` returns the sum of the `k`-th powers of the
+integers `1` through `n`, i.e.,
+```
+1^k + 2^k + 3^k + ... + n^k
+```
+"""
 
 end  #end of module
