@@ -177,7 +177,7 @@ an `n`-set that have no fixed point.
 
 
 
-@memoize function Bell(n)
+@memoize function Bell(n::Integer)
   if n<0
     throw(DomainError())
   end
