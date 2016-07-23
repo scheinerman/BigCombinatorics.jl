@@ -5,7 +5,8 @@ using Memoize
 export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
 export Bell, Stirling1, Stirling2
-export IntPartitions, Euler, PowerSum
+export IntPartitions, IntPartitionsDistinct
+export Euler, PowerSum
 
 
 @memoize function Fibonacci(n::Integer)
@@ -298,6 +299,40 @@ end
 `IntPartitions(n,k)` is the number of partitions of the integer
 `n` with exactly `k` (nonzero) parts.
 """ IntPartitions
+
+"""
+`IntPartitionsDistinct(n,k)` is the number of partitions of
+the integer `n` into exactly `k` *distinct* parts.
+
+`IntPartitionsDistinct(n)` is the number of partitions of `n`
+into *distinct* parts.
+"""
+function IntPartitionsDistinct(n::Integer,k::Integer)
+  if n<0 || k<0
+    throw(DomainError())
+  end
+  Ck2 = div(k*(k-1),2)
+  if n < Ck2
+    return big(0)
+  end
+  return IntPartitions(n-Ck2,k)
+end
+
+@memoize function IntPartitionsDistinct(n::Integer)
+  if n<0
+    throw(DomainError())
+  end
+  result = big(0)
+  for k=1:n
+    s = IntPartitionsDistinct(n,k)
+    if s==0
+      break
+    end
+    result += s
+  end
+  return result
+end
+
 
 
 @memoize function Euler(n::Integer)

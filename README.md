@@ -37,9 +37,12 @@ kind, i.e., the number of partitions of an `n`-element set into
 `k`-parts (nonempty).
 + `Fibonacci(n)` returns the `n`-th Fibonacci number
 with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
-+ `IntPartitions(n)` returns the number of partitions of the integer `n`.
-+ `IntPartitions(n,k)` returns the number of partitions of the integer
++ `IntPartitions(n)` returns the number of partitions of the integer `n`
+and `IntPartitions(n,k)` returns the number of partitions of the integer
 `n` with exactly `k` parts.
++ `IntPartitionsDistinct(n)` returns the number of partitions of `n` into
+*distinct* parts and `IntPartitionsDistinct(n,k)` returns the number of
+partitions of `n` into `k` *distinct* parts.
 + `Euler(n)` returns the `n`-th Euler number.
 + `PowerSum(n,k)` returns the sum `1^k + 2^k + ... + n^k`.
 
