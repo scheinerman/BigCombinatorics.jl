@@ -98,13 +98,17 @@ The result is `60` in both cases as these equal `6!/(1! 2! 3!)`.
 **Warning**: This is not the same as `MultiChoose`.
 """
 function Multinomial(v...)
+  nv = length(v)
+  for i=1:nv
+    typeof(v[i])<:Integer || throw(DomainError())
+  end
   vals = [t for t in v]
   return Multinomial(vals)
 end
 
 Multinomial() = big(1)
 
-function Multinomial(vals::Vector{Int})
+function Multinomial{T<:Integer}(vals::Vector{T})
   if any([t<0 for t in vals])
     throw(DomainError())
   end
