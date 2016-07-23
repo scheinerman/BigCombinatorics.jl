@@ -5,7 +5,7 @@ using Memoize
 export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
 export Bell, Stirling1, Stirling2
-export IntPartitions, Euler 
+export IntPartitions, Euler
 
 
 @memoize function Fibonacci(n::Integer)
@@ -291,41 +291,6 @@ this is the sequence
 1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
 """ Euler
 
-################ EXTRAS FOR DEBUGGING ####################
-
-"""
-Common code for the two Stirling matrix functions.
-"""
-function _matrix_maker(n::Int, f::Function)
-  if n<0
-    throw(DomainError())
-  end
-
-  M = zeros(BigInt,n+1,n+1)
-  for i=0:n
-    for j=0:n
-      M[i+1,j+1] = f(i,j)
-    end
-  end
-  return M
-end
-
-"""
-`Stirling1matrix(n)` creates an `n+1`-by-`n+1` matrix
-of Stirling numbers of the first kind (from `0,0` to `n,n`).
-"""
-function Stirling1matrix(n::Int)
-  return _matrix_maker(n,Stirling1)
-end
-
-
-"""
-`Stirling2matrix(n)` creates an `n+1`-by-`n+1` matrix
-of Stirling numbers of the second kind (from `0,0` to `n,n`).
-"""
-function Stirling2matrix(n::Int)
-  return _matrix_maker(n,Stirling2)
-end
 
 
 end  #end of module
