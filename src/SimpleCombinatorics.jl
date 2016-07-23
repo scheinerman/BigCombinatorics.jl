@@ -5,7 +5,7 @@ using Memoize
 export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
 export Bell, Stirling1, Stirling2
-export IntPartitions
+export IntPartitions, Euler 
 
 
 @memoize function Fibonacci(n::Integer)
@@ -274,6 +274,22 @@ end
 """ IntPartitions
 
 
+@memoize function Euler(n::Integer)
+  n>=0 || throw(DomainError())
+  if n%2 == 1
+    return big(0)
+  end
+  if n==0
+    return big(1)
+  end
+  last = div(n,2)-1
+  return -sum([ Binomial(n,2k)*Euler(2k) for k=0:last])
+end
+@doc """
+`Euler(n)` returns the `n`-th Euler number. Starting with `n=0`
+this is the sequence
+1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
+""" Euler
 
 ################ EXTRAS FOR DEBUGGING ####################
 

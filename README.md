@@ -40,6 +40,7 @@ with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 + `IntPartitions(n)` returns the number of partitions of the integer `n`.
 + `IntPartitions(n,k)` returns the number of partitions of the integer
 `n` with exactly `k` parts.
++ `Euler(n)` returns the `n`-th Euler number.
 
 
 ## Implementation
