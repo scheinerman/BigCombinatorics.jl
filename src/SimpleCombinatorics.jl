@@ -170,7 +170,10 @@ end
 
   return (n-1)*(Derangements(n-1)+Derangements(n-2))
 end
-
+@doc """
+`Derangements(n)` returns the number of permutations of
+an `n`-set that have no fixed point.
+""" Derangements
 
 
 
