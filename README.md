@@ -9,8 +9,7 @@ with a capital letter.
 ## The functions
 
 
-+ `Factorial(n)` returns `n!`.
-+ `Factorial(n,k)` returns `n!/(n-k)!`.
++ `Factorial(n)` returns `n!` and `Factorial(n,k)` returns `n!/(n-k)!`.
 + `DoubleFactorial(n)` returns `n!!`.
 + `Catalan(n)` returns the `n`-th Catalan number.
 + `Derangements(n)` returns the number of derangements of
