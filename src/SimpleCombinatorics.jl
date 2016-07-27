@@ -70,7 +70,6 @@ end
 """ DoubleFactorial
 
 
-
 @memoize function Binomial(n::Integer, k::Integer)
   n >= 0 || throw(DomainError())
   if k>n
@@ -79,13 +78,12 @@ end
   if k==0 || k==n
     return big(1)
   end
+  if k==1 || k==n-1
+    return big(n)
+  end
   if 2k > n
     return Binomial(n,n-k)
   end
-  if k*k < n  # small k cases worth recursion
-    return Binomial(n-1,k-1) + Binomial(n-1,k)
-  end
-  # when all else fails
   return div(Factorial(n),Factorial(k)*Factorial(n-k))
 end
 @doc """
