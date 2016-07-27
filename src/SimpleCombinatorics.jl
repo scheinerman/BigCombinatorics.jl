@@ -69,36 +69,24 @@ end
 `n*(n-2)*...` with `0!! == 1!! == 1`.
 """ DoubleFactorial
 
+
+
 @memoize function Binomial(n::Integer, k::Integer)
-  if n<0 || k<0
-    throw(DomainError())
-  end
-  
-  # base cases
+  n >= 0 || throw(DomainError())
   if k>n
     return big(0)
   end
   if k==0 || k==n
     return big(1)
   end
-
-  # speed up tricks
-  if k==1 || k==n-1
-    return big(n)
-  end
-  if k==2 || k==n-2
-    nn = big(n)
-    return div(nn*(nn-1),2)
-  end
-  if n==2k  # Catalan trick
-    return Catalan(k)*(k+1)
-  end
-  if 2k>n
+  if 2k > n
     return Binomial(n,n-k)
   end
-
-  # invoke recursion
-  return Binomial(n-1,k-1)+Binomial(n-1,k)
+  if k*k < n  # small k cases worth recursion
+    return Binomial(n-1,k-1) + Binomial(n-1,k)
+  end
+  # when all else fails
+  return div(Factorial(n),Factorial(k)*Factorial(n-k))
 end
 @doc """
 `Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
