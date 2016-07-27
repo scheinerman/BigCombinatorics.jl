@@ -140,26 +140,14 @@ function MultiChoose(n::Integer,k::Integer)
   return Binomial(n+k-1,k)
 end
 
-@memoize function Catalan(n::Integer)
-  n >= 0 || throw(DomainError())
-  if n==0
-    return big(1)
-  end
-
-  s = big(0)
-  for k=0:n-1
-    s += Catalan(k) * Catalan(n-1-k)
-  end
-  return s
-end
-@doc """
+"""
 `Catalan(n)` returns the `n`-th Catalan number.
-""" Catalan
+"""
+function Catalan(n::Integer)
+  n >= 0 || throw(DomainError())
+  return div(Binomial(2n,n),n+1)
+end
 
-# OLD (slower) VERSION DELETED
-# function Catalan(n::Integer)
-#   return div(Binomial(2n,n),n+1)
-# end
 
 
 @memoize function Derangements(n::Integer)
