@@ -43,7 +43,7 @@ end
   if k>n
     return big(0)
   end
-  if k <= 1
+  if k == 0
     return big(1)
   end
   return n*Factorial(n-1,k-1)
