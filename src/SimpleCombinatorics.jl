@@ -2,7 +2,9 @@ module SimpleCombinatorics
 
 using Memoize
 
-export Fibonacci, Factorial, DoubleFactorial, Binomial, Catalan
+export Fibonacci
+export Factorial, DoubleFactorial, FallingFactorial, RisingFactorial
+export Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
 export Bell, Stirling1, Stirling2
 export IntPartitions, IntPartitionsDistinct
@@ -37,22 +39,58 @@ We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 end
 
 @memoize function Factorial(n::Integer,k::Integer)
+  if n<0 || k<0 || k > n
+    throw(DomainError())
+  end
+
+  if k==n
+    return big(1)
+  end
+
+  return n * Factorial(n-1,k)
+
+end
+@doc """
+`Factorial(n)` returns `n!` for nonnegative integers `n`.
+
+`Factorial(n,k)` returns `n!/k!` (to be consistent with Julia's
+`factorial`.) See also `FallingFactorial` and `RisingFactorial`.
+""" Factorial
+
+
+
+@memoize function FallingFactorial(n::Integer, k::Integer)
   if n<0 || k<0
     throw(DomainError())
   end
   if k>n
     return big(0)
   end
-  if k == 0
+  if k==0
     return big(1)
   end
-  return n*Factorial(n-1,k-1)
+  return n*FallingFactorial(n-1,k-1)
 end
 @doc """
-`Factorial(n)` returns `n!` for nonnegative integers `n`.
+`FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
+(with a total of `k` factors).
+""" FallingFactorial
 
-`Factorial(n,k)` returns `n*(n-1)*...*(n-k+1)`.
-""" Factorial
+
+@memoize function RisingFactorial(n::Integer,k::Integer)
+  if n<0 || k<0
+    throw(DomainError())
+  end
+  if k==0
+    return big(1)
+  end
+  return n*RisingFactorial(n+1,k-1)
+end
+@doc """
+`RisingFactorial(n,k)` returns `n*(n+1)*(n+2)*...*(n+k-1)`
+(with a total of `k` factors).
+""" RisingFactorial
+
 
 
 @memoize function DoubleFactorial(n::Integer)
@@ -84,7 +122,7 @@ end
   if 2k > n
     return Binomial(n,n-k)
   end
-  return div(Factorial(n),Factorial(k)*Factorial(n-k))
+  return div(Factorial(n,k),Factorial(n-k))
 end
 @doc """
 `Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.

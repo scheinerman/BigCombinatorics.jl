@@ -8,8 +8,11 @@ with a capital letter.
 
 ## The functions
 
-
-+ `Factorial(n)` returns `n!` and `Factorial(n,k)` returns `n!/(n-k)!`.
++ `Fibonacci(n)` returns the `n`-th Fibonacci number with `Fibonacci(0)==0`
+and `Fibonacci(1)==1`.
++ `Factorial(n)` returns `n!` and `Factorial(n,k)` returns `n!/k!`.
++ `FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`.
++ `RisingFactorial(n,k)` returns `n*(n+1)*(n+2)*...*(n+k-1)`.
 + `DoubleFactorial(n)` returns `n!!`.
 + `Catalan(n)` returns the `n`-th Catalan number.
 + `Derangements(n)` returns the number of derangements of
