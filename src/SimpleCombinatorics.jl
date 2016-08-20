@@ -107,8 +107,11 @@ end
 `n*(n-2)*...` with `0!! == 1!! == 1`.
 """ DoubleFactorial
 
-
-@memoize function Binomial(n::Integer, k::Integer)
+"""
+`Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
+This is the number of `k`-element subsets of an `n`-element set.
+"""
+function Binomial(n::Integer, k::Integer)
   n >= 0 || throw(DomainError())
   if k>n
     return big(0)
@@ -124,10 +127,7 @@ end
   end
   return div(Factorial(n,k),Factorial(n-k))
 end
-@doc """
-`Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
-This is the number of `k`-element subsets of an `n`-element set.
-""" Binomial
+
 
 """
 `Multinomial(vec)` returns the multinomial coefficient whose
