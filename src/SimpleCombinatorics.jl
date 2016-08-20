@@ -54,43 +54,43 @@ end
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
 
 `Factorial(n,k)` returns `n!/k!` (to be consistent with Julia's
-`factorial`.) See also `FallingFactorial` and `RisingFactorial`.
+`factorial`.) Requires `0 <= k <= n`.
+
+See also `FallingFactorial` and `RisingFactorial`.
 """ Factorial
 
-
-
-@memoize function FallingFactorial(n::Integer, k::Integer)
+"""
+`FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
+(with a total of `k` factors). Requires `n,k >= 0`.
+If `k>n` then `0` is returned.
+"""
+function FallingFactorial(n::Integer, k::Integer)
   if n<0 || k<0
     throw(DomainError())
   end
   if k>n
     return big(0)
   end
-  if k==0
-    return big(1)
-  end
-  return n*FallingFactorial(n-1,k-1)
+  return Factorial(n,n-k)
 end
-@doc """
-`FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
-(with a total of `k` factors).
-""" FallingFactorial
 
 
-@memoize function RisingFactorial(n::Integer,k::Integer)
+"""
+`RisingFactorial(n,k)` returns `n*(n+1)*(n+2)*...*(n+k-1)`
+(with a total of `k` factors). Requires `n,k >= 0`.
+"""
+function RisingFactorial(n::Integer,k::Integer)
   if n<0 || k<0
     throw(DomainError())
   end
   if k==0
     return big(1)
   end
-  return n*RisingFactorial(n+1,k-1)
+  if n==0
+    return big(0)
+  end
+  return FallingFactorial(n+k-1,k)
 end
-@doc """
-`RisingFactorial(n,k)` returns `n*(n+1)*(n+2)*...*(n+k-1)`
-(with a total of `k` factors).
-""" RisingFactorial
-
 
 
 @memoize function DoubleFactorial(n::Integer)
