@@ -1,6 +1,6 @@
 module SimpleCombinatorics
 
-using Memoize
+using Memoize, Combinatorics
 
 export Fibonacci
 export Factorial, DoubleFactorial, FallingFactorial, RisingFactorial
@@ -28,7 +28,6 @@ end
 We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 """ Fibonacci
 
-import Combinatorics.factorial
 
 """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
@@ -92,22 +91,23 @@ end
 `Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
 This is the number of `k`-element subsets of an `n`-element set.
 """
-function Binomial(n::Integer, k::Integer)
-  n >= 0 || throw(DomainError())
-  if k>n
-    return big(0)
-  end
-  if k==0 || k==n
-    return big(1)
-  end
-  if k==1 || k==n-1
-    return big(n)
-  end
-  if 2k > n
-    return Binomial(n,n-k)
-  end
-  return div(Factorial(n,k),Factorial(n-k))
-end
+Binomial(n::Integer, k::Integer) = binomial(big(n),big(k))
+  #
+  # n >= 0 || throw(DomainError())
+  # if k>n
+  #   return big(0)
+  # end
+  # if k==0 || k==n
+  #   return big(1)
+  # end
+  # if k==1 || k==n-1
+  #   return big(n)
+  # end
+  # if 2k > n
+  #   return Binomial(n,n-k)
+  # end
+  # return div(Factorial(n,k),Factorial(n-k))
+  # end
 
 
 """
