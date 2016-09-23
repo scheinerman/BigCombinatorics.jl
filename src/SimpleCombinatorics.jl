@@ -28,36 +28,17 @@ end
 We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 """ Fibonacci
 
-@memoize function Factorial(n::Integer)
-  if n<0
-    throw(DomainError())
-  end
-  if n==0 || n==1
-    return big(1)
-  end
-  return n * Factorial(n-1)
-end
+import Combinatorics.factorial
 
-@memoize function Factorial(n::Integer,k::Integer)
-  if n<0 || k<0 || k > n
-    throw(DomainError())
-  end
-
-  if k==n
-    return big(1)
-  end
-
-  return n * Factorial(n-1,k)
-
-end
-@doc """
+"""
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
-
 `Factorial(n,k)` returns `n!/k!` (to be consistent with Julia's
 `factorial`.) Requires `0 <= k <= n`.
 
 See also `FallingFactorial` and `RisingFactorial`.
-""" Factorial
+"""
+Factorial(n::Integer) = factorial(big(n))
+Factorial(n::Integer,k::Integer) = factorial(big(n),big(k))
 
 """
 `FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
