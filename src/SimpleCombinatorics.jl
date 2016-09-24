@@ -389,7 +389,7 @@ this is the sequence
     return big(n)
   end
   if k==1
-    return Binomial(n,2)
+    return Binomial(n+1,2)
   end
 
   # recursion
