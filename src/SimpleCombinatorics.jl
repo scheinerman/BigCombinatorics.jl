@@ -1,6 +1,6 @@
 module SimpleCombinatorics
 
-using Memoize, Combinatorics
+using Memoize
 
 export Fibonacci
 export Factorial, DoubleFactorial, FallingFactorial, RisingFactorial
@@ -267,9 +267,13 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
 """ Stirling1
 
 
+# We use ip1 and ip2 as Memoized versions of IntPartitions to avoid
+# a bug in the Memoize module that doesn't allow multiple dispatch.
+# If/when that's fixed, we can go back to defining IntPartitions
+# without the use of ip1 and ip2.
 
 
-@memoize function IntPartitions(n::Integer,k::Integer)
+@memoize function ip2(n::Integer,k::Integer)
   if n<0 || k<0
     throw(DomainError())
   end
@@ -287,19 +291,24 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
     return big(1)
   end
 
-  return sum([IntPartitions(n-k,i) for i=0:k])
+  return sum([ip2(n-k,i) for i=0:k])
 end
 
-@memoize function IntPartitions(n::Integer)
-  return sum([IntPartitions(n,k) for k=0:n])
+@memoize function ip1(n::Integer)
+  return sum([ip2(n,k) for k=0:n])
 end
 
-@doc """
+
+"""
 `IntPartitions(n)` is the number of partitions of the integer `n`.
 
 `IntPartitions(n,k)` is the number of partitions of the integer
 `n` with exactly `k` (nonzero) parts.
-""" IntPartitions
+"""
+IntPartitions(n::Integer) = ip1(n)
+IntPartitions(n::Integer,k::Integer) = ip2(n,k)
+
+
 
 """
 `IntPartitionsDistinct(n,k)` is the number of partitions of
@@ -308,7 +317,10 @@ the integer `n` into exactly `k` *distinct* parts.
 `IntPartitionsDistinct(n)` is the number of partitions of `n`
 into *distinct* parts.
 """
-function IntPartitionsDistinct(n::Integer,k::Integer)
+IntPartitionsDistinct(n::Integer,k::Integer) = dip2(n,k)
+IntPartitionsDistinct(n::Integer) = dip1(n)
+
+function dip2(n::Integer,k::Integer)
   if n<0 || k<0
     throw(DomainError())
   end
@@ -319,13 +331,16 @@ function IntPartitionsDistinct(n::Integer,k::Integer)
   return IntPartitions(n-Ck2,k)
 end
 
-@memoize function IntPartitionsDistinct(n::Integer)
+@memoize function dip1(n::Integer)
   if n<0
     throw(DomainError())
   end
+  if n==0
+    return big(1)
+  end 
   result = big(0)
   for k=1:n
-    s = IntPartitionsDistinct(n,k)
+    s = dip2(n,k)
     if s==0
       break
     end
