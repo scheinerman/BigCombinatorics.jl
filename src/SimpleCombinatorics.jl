@@ -36,8 +36,19 @@ We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 
 See also `FallingFactorial` and `RisingFactorial`.
 """
-Factorial(n::Integer) = factorial(big(n))
-Factorial(n::Integer,k::Integer) = factorial(big(n),big(k))
+Factorial(n::Integer) = fact1(n)
+Factorial(n::Integer,k::Integer) = fact2(n,k)
+
+
+@memoize function fact1(n::Integer)
+  return factorial(big(n))
+end
+
+@memoize function fact2(n::Integer,k::Integer)
+  return factorial(big(n),big(k))
+end
+
+
 
 """
 `FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
@@ -337,7 +348,7 @@ end
   end
   if n==0
     return big(1)
-  end 
+  end
   result = big(0)
   for k=1:n
     s = dip2(n,k)

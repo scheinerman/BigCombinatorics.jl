@@ -56,16 +56,3 @@ the calculations efficient, we use the `Memoize` module.
 This means that no function value is ever evaluated twice;
 subsequent calls are simply recalled. By looking up
 previously computed values, the code is quite efficient.
-
-For example, here we compare `Factorial` from this module
-versus `factorial` from the `Combinatorics` module.
-```julia
-julia> tic(); e1 = sum([1/factorial(big(k)) for k=0:100]); toc();
-elapsed time: 0.077007934 seconds
-
-julia> tic(); e2 = sum([1/Factorial(k) for k=0:100]); toc();
-elapsed time: 0.066950058 seconds
-
-julia> e1==e2
-true
-```
