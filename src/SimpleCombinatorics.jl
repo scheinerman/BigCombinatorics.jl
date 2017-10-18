@@ -1,8 +1,8 @@
 module SimpleCombinatorics
 
-using Memoize
+using Memoize, Combinatorics
 
-export Fibonacci, Big
+export Fibonacci
 export Factorial, DoubleFactorial, FallingFactorial, RisingFactorial
 export Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
@@ -11,8 +11,7 @@ export IntPartitions, IntPartitionsDistinct
 export Euler, PowerSum
 
 
-
-@memoize function Fibonacci(n::Integer)
+@memoize function Fibonacci(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -37,26 +36,15 @@ We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 
 See also `FallingFactorial` and `RisingFactorial`.
 """
-Factorial(n::Integer) = fact1(n)
-Factorial(n::Integer,k::Integer) = fact2(n,k)
-
-
-@memoize function fact1(n::Integer)
-  return factorial(big(n))
-end
-
-@memoize function fact2(n::Integer,k::Integer)
-  return factorial(big(n),big(k))
-end
-
-
+Factorial(n::Integer) = factorial(big(n))::BigInt
+Factorial(n::Integer,k::Integer) = factorial(big(n),big(k))::BigInt
 
 """
 `FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
 (with a total of `k` factors). Requires `n,k >= 0`.
 If `k>n` then `0` is returned.
 """
-function FallingFactorial(n::Integer, k::Integer)
+function FallingFactorial(n::Integer, k::Integer)::BigInt
   if n<0 || k<0
     throw(DomainError())
   end
@@ -71,7 +59,7 @@ end
 `RisingFactorial(n,k)` returns `n*(n+1)*(n+2)*...*(n+k-1)`
 (with a total of `k` factors). Requires `n,k >= 0`.
 """
-function RisingFactorial(n::Integer,k::Integer)
+function RisingFactorial(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
     throw(DomainError())
   end
@@ -85,7 +73,7 @@ function RisingFactorial(n::Integer,k::Integer)
 end
 
 
-@memoize function DoubleFactorial(n::Integer)
+@memoize function DoubleFactorial(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -103,7 +91,7 @@ end
 `Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
 This is the number of `k`-element subsets of an `n`-element set.
 """
-Binomial(n::Integer, k::Integer) = binomial(big(n),big(k))
+Binomial(n::Integer, k::Integer) = binomial(big(n),big(k))::BigInt
   #
   # n >= 0 || throw(DomainError())
   # if k>n
@@ -133,7 +121,7 @@ The result is `60` in both cases as these equal `6!/(1! 2! 3!)`.
 
 **Warning**: This is not the same as `MultiChoose`.
 """
-function Multinomial(v...)
+function Multinomial(v...)::BigInt
   nv = length(v)
   for i=1:nv
     typeof(v[i])<:Integer || throw(DomainError())
@@ -142,9 +130,9 @@ function Multinomial(v...)
   return Multinomial(vals)
 end
 
-Multinomial() = big(1)
+Multinomial() = big(1)::BigInt
 
-function Multinomial{T<:Integer}(vals::Vector{T})
+function Multinomial{T<:Integer}(vals::Vector{T})::BigInt
   if any([t<0 for t in vals])
     throw(DomainError())
   end
@@ -167,21 +155,21 @@ end
 
 **Warning**: This is not the same as `Multinomial`.
 """
-function MultiChoose(n::Integer,k::Integer)
+function MultiChoose(n::Integer,k::Integer)::BigInt
   return Binomial(n+k-1,k)
 end
 
 """
 `Catalan(n)` returns the `n`-th Catalan number.
 """
-function Catalan(n::Integer)
+function Catalan(n::Integer)::BigInt
   n >= 0 || throw(DomainError())
   return div(Binomial(2n,n),n+1)
 end
 
 
 
-@memoize function Derangements(n::Integer)
+@memoize function Derangements(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -201,7 +189,7 @@ an `n`-set that have no fixed point.
 
 
 
-@memoize function Bell(n::Integer)
+@memoize function Bell(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -220,7 +208,7 @@ end
 the number of partitions of an `n`-element set.
 """ Bell
 
-@memoize function Stirling2(n::Integer,k::Integer)
+@memoize function Stirling2(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
     throw(DomainError())
@@ -250,7 +238,7 @@ end
 that is, the number of paritions of an `n`-set into `k`-parts."
 """ Stirling2
 
-@memoize function Stirling1(n::Integer,k::Integer)
+@memoize function Stirling1(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
     throw(DomainError())
@@ -279,13 +267,9 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
 """ Stirling1
 
 
-# We use ip1 and ip2 as Memoized versions of IntPartitions to avoid
-# a bug in the Memoize module that doesn't allow multiple dispatch.
-# If/when that's fixed, we can go back to defining IntPartitions
-# without the use of ip1 and ip2.
 
 
-@memoize function ip2(n::Integer,k::Integer)
+@memoize function IntPartitions(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
     throw(DomainError())
   end
@@ -303,24 +287,19 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
     return big(1)
   end
 
-  return sum([ip2(n-k,i) for i=0:k])
+  return sum([IntPartitions(n-k,i) for i=0:k])
 end
 
-@memoize function ip1(n::Integer)
-  return sum([ip2(n,k) for k=0:n])
+@memoize function IntPartitions(n::Integer)::BigInt
+  return sum([IntPartitions(n,k) for k=0:n])
 end
 
-
-"""
+@doc """
 `IntPartitions(n)` is the number of partitions of the integer `n`.
 
 `IntPartitions(n,k)` is the number of partitions of the integer
 `n` with exactly `k` (nonzero) parts.
-"""
-IntPartitions(n::Integer) = ip1(n)
-IntPartitions(n::Integer,k::Integer) = ip2(n,k)
-
-
+""" IntPartitions
 
 """
 `IntPartitionsDistinct(n,k)` is the number of partitions of
@@ -329,10 +308,7 @@ the integer `n` into exactly `k` *distinct* parts.
 `IntPartitionsDistinct(n)` is the number of partitions of `n`
 into *distinct* parts.
 """
-IntPartitionsDistinct(n::Integer,k::Integer) = dip2(n,k)
-IntPartitionsDistinct(n::Integer) = dip1(n)
-
-function dip2(n::Integer,k::Integer)
+function IntPartitionsDistinct(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
     throw(DomainError())
   end
@@ -343,16 +319,13 @@ function dip2(n::Integer,k::Integer)
   return IntPartitions(n-Ck2,k)
 end
 
-@memoize function dip1(n::Integer)
+@memoize function IntPartitionsDistinct(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
-  if n==0
-    return big(1)
-  end
   result = big(0)
   for k=1:n
-    s = dip2(n,k)
+    s = IntPartitionsDistinct(n,k)
     if s==0
       break
     end
@@ -363,7 +336,7 @@ end
 
 
 
-@memoize function Euler(n::Integer)
+@memoize function Euler(n::Integer)::BigInt
   n>=0 || throw(DomainError())
   if n%2 == 1
     return big(0)
@@ -380,7 +353,7 @@ this is the sequence
 1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
 """ Euler
 
-@memoize function PowerSum(n::Integer, k::Integer)
+@memoize function PowerSum(n::Integer, k::Integer)::BigInt
   (n>=0 && k>=0) || throw(DomainError())
   # Base and special cases
   if n==0
@@ -390,7 +363,7 @@ this is the sequence
     return big(n)
   end
   if k==1
-    return Binomial(n+1,2)
+    return Binomial(n,2)
   end
 
   # recursion
