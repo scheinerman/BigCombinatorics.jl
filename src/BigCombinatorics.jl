@@ -10,9 +10,36 @@ export Bell, Stirling1, Stirling2
 export IntPartitions, IntPartitionsDistinct
 export Euler, PowerSum
 
-master_table = Dict{Function,Dict}()
+_master_table = Dict{Function,Dict}()
+
+function _save(f::Function, x, val::BigInt)
+    d = _master_table[f]
+    d[x] = val
+    nothing
+end
+
+function _has(f::Function, x)::Bool
+    d = _master_table[f]
+    return haskey(d,x)
+end
+
+function _get(f::Function, x)::BigInt
+    d = _master_table[f]
+    return d[x]
+end
+
+function _make(f::Function, T::Type)
+    _master_table[f] = Dict{T,BigInt}()
+    nothing
+end
 
 
+
+
+"""
+`Fibonacci(n)` returns the `n`-th Fibonacci number.
+We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
+"""
 function Fibonacci(n::Integer)::BigInt
   if n<0
     throw(DomainError())
@@ -23,13 +50,16 @@ function Fibonacci(n::Integer)::BigInt
   if n==1
     return big(1)
   end
-  return Fibonacci(n-1)+Fibonacci(n-2)
+  if _has(Fibonacci,n)
+      return _get(Fibonacci,n)
+  end
+  val = Fibonacci(n-1)+Fibonacci(n-2)
+  _save(Fibonacci,n,val)
+  return val
 end
-@doc """
-`Fibonacci(n)` returns the `n`-th Fibonacci number.
-We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
-""" Fibonacci
 
+
+_make(Fibonacci,Integer)
 
 """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
@@ -134,7 +164,7 @@ end
 
 Multinomial() = big(1)::BigInt
 
-function Multinomial{T<:Integer}(vals::Vector{T})::BigInt
+function Multinomial(vals::Vector{T})::BigInt where T<:Integer
   if any([t<0 for t in vals])
     throw(DomainError())
   end
