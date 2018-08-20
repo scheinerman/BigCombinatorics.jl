@@ -10,6 +10,8 @@ export Bell, Stirling1, Stirling2
 export IntPartitions, IntPartitionsDistinct
 export Euler, PowerSum
 
+master_table = Dict{Function,Dict}()
+
 
 @memoize function Fibonacci(n::Integer)::BigInt
   if n<0
