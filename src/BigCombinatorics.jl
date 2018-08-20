@@ -1,6 +1,6 @@
 module BigCombinatorics
 
-using Memoize, Combinatorics
+using Combinatorics
 
 export Fibonacci
 export Factorial, DoubleFactorial, FallingFactorial, RisingFactorial
@@ -13,7 +13,7 @@ export Euler, PowerSum
 master_table = Dict{Function,Dict}()
 
 
-@memoize function Fibonacci(n::Integer)::BigInt
+function Fibonacci(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -75,7 +75,7 @@ function RisingFactorial(n::Integer,k::Integer)::BigInt
 end
 
 
-@memoize function DoubleFactorial(n::Integer)::BigInt
+function DoubleFactorial(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -171,7 +171,7 @@ end
 
 
 
-@memoize function Derangements(n::Integer)::BigInt
+function Derangements(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -191,7 +191,7 @@ an `n`-set that have no fixed point.
 
 
 
-@memoize function Bell(n::Integer)::BigInt
+function Bell(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -210,7 +210,7 @@ end
 the number of partitions of an `n`-element set.
 """ Bell
 
-@memoize function Stirling2(n::Integer,k::Integer)::BigInt
+function Stirling2(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
     throw(DomainError())
@@ -240,7 +240,7 @@ end
 that is, the number of paritions of an `n`-set into `k`-parts."
 """ Stirling2
 
-@memoize function Stirling1(n::Integer,k::Integer)::BigInt
+function Stirling1(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
     throw(DomainError())
@@ -271,7 +271,7 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
 
 
 
-@memoize function IntPartitions(n::Integer,k::Integer)::BigInt
+function IntPartitions(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
     throw(DomainError())
   end
@@ -292,7 +292,7 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
   return sum([IntPartitions(n-k,i) for i=0:k])
 end
 
-@memoize function IntPartitions(n::Integer)::BigInt
+function IntPartitions(n::Integer)::BigInt
   return sum([IntPartitions(n,k) for k=0:n])
 end
 
@@ -321,7 +321,7 @@ function IntPartitionsDistinct(n::Integer,k::Integer)::BigInt
   return IntPartitions(n-Ck2,k)
 end
 
-@memoize function IntPartitionsDistinct(n::Integer)::BigInt
+function IntPartitionsDistinct(n::Integer)::BigInt
   if n<0
     throw(DomainError())
   end
@@ -338,7 +338,7 @@ end
 
 
 
-@memoize function Euler(n::Integer)::BigInt
+function Euler(n::Integer)::BigInt
   n>=0 || throw(DomainError())
   if n%2 == 1
     return big(0)
@@ -355,7 +355,7 @@ this is the sequence
 1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
 """ Euler
 
-@memoize function PowerSum(n::Integer, k::Integer)::BigInt
+function PowerSum(n::Integer, k::Integer)::BigInt
   (n>=0 && k>=0) || throw(DomainError())
   # Base and special cases
   if n==0
