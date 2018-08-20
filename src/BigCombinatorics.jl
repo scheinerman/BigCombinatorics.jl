@@ -1,4 +1,4 @@
-module SimpleCombinatorics
+module BigCombinatorics
 
 using Memoize, Combinatorics
 
