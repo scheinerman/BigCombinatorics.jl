@@ -52,6 +52,9 @@ partitions of `n` into `k` *distinct* parts.
 
 ## Implementation
 
+**NOTE**: Memoize is broken at the time of this writing, so I'm
+going to rebuild this without any dependencies.
+
 These function all have nice recursive properties that we
 exploit to make the code as simple as possible. To keep
 the calculations efficient, we use the `Memoize` module.
