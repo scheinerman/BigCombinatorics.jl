@@ -1,4 +1,6 @@
-# Simple Combinatorics
+# BigCombinatorics
+
+UNDER CONSTRUCTION!!!
 
 This is an implementation of various combinatorial functions.
 These functions *always* return `BigInt` values. This convention
