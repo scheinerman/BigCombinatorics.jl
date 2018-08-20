@@ -8,12 +8,40 @@
 [![codecov.io](http://codecov.io/github/scheinerman/BigCombinatorics.jl/coverage.svg?branch=master)](http://codecov.io/github/scheinerman/BigCombinatorics.jl?branch=master)
 
 
-UNDER CONSTRUCTION!!!
 
 This is an implementation of various combinatorial functions.
 These functions *always* return `BigInt` values. This convention
 is signaled by the fact that these functions' names begin
 with a capital letter.
+
+## Rationale
+
+If we want to calculate 20!, it's easy enough to do this:
+```julia
+julia> factorial(20)
+2432902008176640000
+```
+However, for 100!, we see this:
+```julia
+julia> factorial(100)
+ERROR: OverflowError: 100 is too large to look up in the table
+Stacktrace:
+ [1] factorial_lookup(::Int64, ::Array{Int64,1}, ::Int64) at ./combinatorics.jl:19
+ [2] factorial(::Int64) at ./combinatorics.jl:27
+ [3] top-level scope at none:0
+```
+The problem is that 100! is too big to fit in an `Int` answer. Of course,
+we could resolve this problem this way:
+```julia
+julia> factorial(big(100))
+93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
+```
+
+We take a different approach. We shouldn't have to worry about how large
+our arguments may be before a combinatorial function overflows. Instead,
+let's assume the result is *always* of type `BigInt` so the calculation
+will not be hampered by this problem.
+
 
 
 ## The functions
@@ -60,12 +88,16 @@ partitions of `n` into `k` *distinct* parts.
 
 ## Implementation
 
-**NOTE**: Memoize is broken at the time of this writing, so I'm
-going to rebuild this without any dependencies.
 
 These function all have nice recursive properties that we
 exploit to make the code as simple as possible. To keep
-the calculations efficient, we use the `Memoize` module.
-This means that no function value is ever evaluated twice;
-subsequent calls are simply recalled. By looking up
-previously computed values, the code is quite efficient.
+the calculations efficient, we use cache the values we have
+already computed;
+This means that no function value is ever evaluated twice.
+
+<hr>
+
+## To Do
+
+There should be a way to wipe out the cached values to save space.
+This should be easy to implement.

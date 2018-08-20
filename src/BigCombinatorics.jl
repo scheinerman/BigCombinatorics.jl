@@ -105,6 +105,10 @@ function RisingFactorial(n::Integer,k::Integer)::BigInt
 end
 
 
+"""
+`DoubleFactorial(n)` returns `n!!`, i.e.,
+`n*(n-2)*...` with `0!! == 1!! == 1`.
+"""
 function DoubleFactorial(n::Integer)::BigInt
   if n<0
     throw(DomainError())
@@ -112,34 +116,21 @@ function DoubleFactorial(n::Integer)::BigInt
   if n==0 || n==1
     return big(1)
   end
-  return n*DoubleFactorial(n-2)
+  if _has(DoubleFactorial,n)
+      return _get(DoubleFactorial,n)
+  end
+  val = n * DoubleFactorial(n-2)
+  _save(DoubleFactorial,n,val)
+  return val
 end
-@doc """
-`DoubleFactorial(n)` returns `n!!`, i.e.,
-`n*(n-2)*...` with `0!! == 1!! == 1`.
-""" DoubleFactorial
+_make(DoubleFactorial,Integer)
+
 
 """
 `Binomial(n,k)` returns the binomial coefficient `n`-choose-`k`.
 This is the number of `k`-element subsets of an `n`-element set.
 """
 Binomial(n::Integer, k::Integer) = binomial(big(n),big(k))::BigInt
-  #
-  # n >= 0 || throw(DomainError())
-  # if k>n
-  #   return big(0)
-  # end
-  # if k==0 || k==n
-  #   return big(1)
-  # end
-  # if k==1 || k==n-1
-  #   return big(n)
-  # end
-  # if 2k > n
-  #   return Binomial(n,n-k)
-  # end
-  # return div(Factorial(n,k),Factorial(n-k))
-  # end
 
 
 """
@@ -200,7 +191,10 @@ function Catalan(n::Integer)::BigInt
 end
 
 
-
+"""
+`Derangements(n)` returns the number of permutations of
+an `n`-set that have no fixed point.
+"""
 function Derangements(n::Integer)::BigInt
   if n<0
     throw(DomainError())
@@ -211,16 +205,21 @@ function Derangements(n::Integer)::BigInt
   if n==1
     return big(0)
   end
+  if _has(Derangements,n)
+      return _get(Derangements,n)
+  end
 
-  return (n-1)*(Derangements(n-1)+Derangements(n-2))
+  val = (n-1)*(Derangements(n-1)+Derangements(n-2))
+  _save(Derangements,n,val)
+  return val
 end
-@doc """
-`Derangements(n)` returns the number of permutations of
-an `n`-set that have no fixed point.
-""" Derangements
 
+_make(Derangements,Integer)
 
-
+"""
+`Bell(n)` gives the `n`-th Bell number, that is,
+the number of partitions of an `n`-element set.
+"""
 function Bell(n::Integer)::BigInt
   if n<0
     throw(DomainError())
@@ -228,18 +227,24 @@ function Bell(n::Integer)::BigInt
   if n==1 || n==0
     return big(1)
   end
+  if _has(Bell,n)
+      return _get(Bell,n)
+  end
   N1 = n-1
   result = big(0)
   for k=0:n-1
     result += Binomial(n-1,k) * Bell(k)
   end
+  _save(Bell,n,result)
   return result
 end
-@doc """
-`Bell(n)` gives the `n`-th Bell number, that is,
-the number of partitions of an `n`-element set.
-""" Bell
+_make(Bell,Integer)
 
+
+"""
+`Stirling2(n,k)` gives the Stirling number of the second kind,
+that is, the number of paritions of an `n`-set into `k`-parts."
+"""
 function Stirling2(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
@@ -262,14 +267,22 @@ function Stirling2(n::Integer,k::Integer)::BigInt
     return big(1)
   end
   # END OF SPECIAL CASES, invoke recursion
+  if _has(Stirling2,(n,k))
+      return _get(Stirling2,(n,k))
+  end
 
-  return Stirling2(n-1,k-1) + Stirling2(n-1,k)*k
+  val = Stirling2(n-1,k-1) + Stirling2(n-1,k)*k
+  _save(Stirling2,(n,k),val)
+  return val
 end
-@doc """
-`Stirling2(n,k)` gives the Stirling number of the second kind,
-that is, the number of paritions of an `n`-set into `k`-parts."
-""" Stirling2
+_make(Stirling2,Tuple{Integer,Integer})
 
+
+"""
+`Stirling1(n,k)` gives the (signed) Stirling number
+of the first kind, that is, the coefficient of `x^k`
+in the poynomial `x(x-1)(x-2)...(x-n+1)`.
+"""
 function Stirling1(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
@@ -288,19 +301,27 @@ function Stirling1(n::Integer,k::Integer)::BigInt
     return big(0)
   end
 
+  if _has(Stirling1,(n,k))
+      return _get(Stirling1,(n,k))
+  end
+
   # end of special cases, invoke recursion
 
-  return Stirling1(n-1,k-1) - (n-1)*Stirling1(n-1,k)
+  val = Stirling1(n-1,k-1) - (n-1)*Stirling1(n-1,k)
+  _save(Stirling1,(n,k),val)
+  return val
 end
-@doc """
-`Stirling1(n,k)` gives the (signed) Stirling number
-of the first kind, that is, the coefficient of `x^k`
-in the poynomial `x(x-1)(x-2)...(x-n+1)`.
-""" Stirling1
+
+_make(Stirling1,Tuple{Integer,Integer})
 
 
 
+"""
+`IntPartitions(n)` is the number of partitions of the integer `n`.
 
+`IntPartitions(n,k)` is the number of partitions of the integer
+`n` with exactly `k` (nonzero) parts.
+"""
 function IntPartitions(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
     throw(DomainError())
@@ -318,20 +339,28 @@ function IntPartitions(n::Integer,k::Integer)::BigInt
   if k==n || k==1
     return big(1)
   end
+  if _has(IntPartitions,(n,k))
+      return _get(IntPartitions,(n,k))
+  end
 
-  return sum([IntPartitions(n-k,i) for i=0:k])
+  val =  sum([IntPartitions(n-k,i) for i=0:k])
+  _save(IntPartitions,(n,k),val)
+  return val
 end
 
 function IntPartitions(n::Integer)::BigInt
-  return sum([IntPartitions(n,k) for k=0:n])
+    if n<0
+        throw(DomainError())
+    end
+    if _has(IntPartitions,n)
+        return _get(IntPartitions,n)
+    end
+    val = sum([IntPartitions(n,k) for k=0:n])
+    _save(IntPartitions,n,val)
+    return val
 end
 
-@doc """
-`IntPartitions(n)` is the number of partitions of the integer `n`.
-
-`IntPartitions(n,k)` is the number of partitions of the integer
-`n` with exactly `k` (nonzero) parts.
-""" IntPartitions
+_make(IntPartitions,Union{Tuple{Integer,Integer},Integer})
 
 """
 `IntPartitionsDistinct(n,k)` is the number of partitions of
@@ -366,8 +395,11 @@ function IntPartitionsDistinct(n::Integer)::BigInt
   return result
 end
 
-
-
+"""
+`Euler(n)` returns the `n`-th Euler number. Starting with `n=0`
+this is the sequence
+1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
+"""
 function Euler(n::Integer)::BigInt
   n>=0 || throw(DomainError())
   if n%2 == 1
@@ -376,15 +408,24 @@ function Euler(n::Integer)::BigInt
   if n==0
     return big(1)
   end
-  last = div(n,2)-1
-  return -sum([ Binomial(n,2k)*Euler(2k) for k=0:last])
-end
-@doc """
-`Euler(n)` returns the `n`-th Euler number. Starting with `n=0`
-this is the sequence
-1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
-""" Euler
+  if _has(Euler,n)
+      return _get(Euler,n)
+  end
 
+
+  last = div(n,2)-1
+  val =  -sum([ Binomial(n,2k)*Euler(2k) for k=0:last])
+  _save(Euler,n,val)
+  return val
+end
+_make(Euler,Integer)
+
+
+"""
+`PowerSum(n,k)` returns the sum of the `k`-th powers of the
+integers `1` through `n`, i.e.,
+`1^k + 2^k + 3^k + ... + n^k`.
+"""
 function PowerSum(n::Integer, k::Integer)::BigInt
   (n>=0 && k>=0) || throw(DomainError())
   # Base and special cases
@@ -397,14 +438,14 @@ function PowerSum(n::Integer, k::Integer)::BigInt
   if k==1
     return Binomial(n,2)
   end
+  if _has(PowerSum,(n,k))
+      return _get(PowerSum,(n,k))
+  end
 
-  # recursion
-  return big(n)^k + PowerSum(n-1,k)
+  val =  big(n)^k + PowerSum(n-1,k)
+  _save(PowerSum,(n,k),val)
+  return val
 end
-@doc """
-`PowerSum(n,k)` returns the sum of the `k`-th powers of the
-integers `1` through `n`, i.e.,
-`1^k + 2^k + 3^k + ... + n^k`.
-""" PowerSum
+_make(PowerSum,Tuple{Integer,Integer})
 
 end  #end of module
