@@ -89,15 +89,23 @@ partitions of `n` into `k` *distinct* parts.
 ## Implementation
 
 
-These function all have nice recursive properties that we
+These function have nice recursive properties that we
 exploit to make the code as simple as possible. To keep
-the calculations efficient, we use cache the values we have
-already computed;
-This means that no function value is ever evaluated twice.
+the calculations efficient, we cache the values we have
+already computed; no function value is ever calculated twice.
+
+The following functions can be used to manage the saved values.
+
+* `BigCombinatorics.cache_report()` prints out the number of values
+stored in the cache for each function.
+* `BigCombinatorics.cache_clear(func)` clears all values stored for
+a specific function.
+* `BigCombinatorics.cache_clear()` clears all values in the cache.
+
+
+
 
 <hr>
 
 ## To Do
-
-There should be a way to wipe out the cached values to save space.
-This should be easy to implement.
+The cache functions are not fully implemented yet. 

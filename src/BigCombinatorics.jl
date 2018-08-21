@@ -33,6 +33,22 @@ function _make(f::Function, T::Type)
     nothing
 end
 
+function cache_report()
+    total = 0
+    for func in keys(_master_table)
+        parse_func = split(string(func),".")
+        func_name = parse_func[2]
+        sz = length(_master_table[func])
+        total += sz
+        println("$sz\t$func_name")
+    end
+    println()
+    println("$total\tTotal entries")
+    nothing
+end
+
+
+
 
 
 
