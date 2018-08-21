@@ -148,14 +148,9 @@ function RisingFactorial(n::Integer,k::Integer)::BigInt
   if n==0
     return big(0)
   end
-  if _has(RisingFactorial,(n,k))
-      return _get(RisingFactorial,(n,k))
-  end
-  val = FallingFactorial(n+k-1,k)
-  _save(RisingFactorial,(n,k),val)
-  return val
+
+  return FallingFactorial(n+k-1,k)
 end
-_make(RisingFactorial,Tuple{Integer,Integer})
 
 
 """
