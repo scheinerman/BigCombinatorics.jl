@@ -124,8 +124,14 @@ function FallingFactorial(n::Integer, k::Integer)::BigInt
   if k>n
     return big(0)
   end
-  return Factorial(n,n-k)
+  if _has(FallingFactorial,(n,k))
+      return _get(FallingFactorial,(n,k))
+  end
+  val = Factorial(n,n-k)
+  _save(FallingFactorial,(n,k),val)
+  return val
 end
+_make(FallingFactorial,Tuple{Integer,Integer})
 
 
 """
@@ -142,8 +148,14 @@ function RisingFactorial(n::Integer,k::Integer)::BigInt
   if n==0
     return big(0)
   end
-  return FallingFactorial(n+k-1,k)
+  if _has(RisingFactorial,(n,k))
+      return _get(RisingFactorial,(n,k))
+  end
+  val = FallingFactorial(n+k-1,k)
+  _save(RisingFactorial,(n,k),val)
+  return val
 end
+_make(RisingFactorial,Tuple{Integer,Integer})
 
 
 """

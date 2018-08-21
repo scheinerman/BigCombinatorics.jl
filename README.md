@@ -90,9 +90,11 @@ partitions of `n` into `k` *distinct* parts.
 
 
 These function have nice recursive properties that we
-exploit to make the code as simple as possible. To keep
-the calculations efficient, we cache the values we have
-already computed; no function value is ever calculated twice.
+exploit to make the code as simple as possible.
+In many (but not all) of these functions we cache the result
+of the calculation to avoid combinatorial explosion in the
+recursion. In those cases, we don't compute the same result twice.
+
 
 The following functions can be used to manage the saved values.
 
