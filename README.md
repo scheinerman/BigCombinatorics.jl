@@ -44,7 +44,7 @@ will not be hampered by this problem.
 
 
 
-## The functions
+## Functions
 
 + `Fibonacci(n)` returns the `n`-th Fibonacci number with `Fibonacci(0)==0`
 and `Fibonacci(1)==1`.
