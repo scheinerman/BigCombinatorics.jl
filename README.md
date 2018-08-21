@@ -101,11 +101,3 @@ stored in the cache for each function.
 * `BigCombinatorics.cache_clear(func)` clears all values stored for
 a specific function.
 * `BigCombinatorics.cache_clear()` clears all values in the cache.
-
-
-
-
-<hr>
-
-## To Do
-The cache functions are not fully implemented yet. 

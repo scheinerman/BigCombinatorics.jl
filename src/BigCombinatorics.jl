@@ -33,6 +33,11 @@ function _make(f::Function, T::Type)
     nothing
 end
 
+"""
+`BigCombinatorics.cache_report()` reports how many
+entries are saved for each function in the `BigCombinatorics`
+module.
+"""
 function cache_report()
     total = 0
     for func in keys(_master_table)
@@ -47,8 +52,30 @@ function cache_report()
     nothing
 end
 
-# function cache_clear(f::Function)
-# function cache_clear()
+
+"""
+`BigCombinatorics.cache_clear(f)` clears the cached values for
+the function `f`. Returns `false` if `f` values are not cached.
+
+`BigCombinatorics.cache_clear()` clears all cached values.
+"""
+function cache_clear(f::Function)::Bool
+    if !haskey(_master_table,f)
+        return false
+    end
+    tab = _master_table[f]
+    for k in keys(tab)
+        delete!(tab,k)
+    end
+    return true
+end
+
+function cache_clear()
+    for f in keys(_master_table)
+        cache_clear(f)
+    end
+    true
+end
 
 """
 `Fibonacci(n)` returns the `n`-th Fibonacci number.
