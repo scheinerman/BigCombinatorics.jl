@@ -47,10 +47,8 @@ function cache_report()
     nothing
 end
 
-
-
-
-
+# function cache_clear(f::Function)
+# function cache_clear()
 
 """
 `Fibonacci(n)` returns the `n`-th Fibonacci number.
