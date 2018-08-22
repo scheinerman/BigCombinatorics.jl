@@ -83,7 +83,7 @@ We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 """
 function Fibonacci(n::Integer)::BigInt
   if n<0
-    throw(DomainError())
+    throw(DomainError(n,"argument must be nonngative"))
   end
   if n==0
     return big(0)
@@ -109,8 +109,28 @@ _make(Fibonacci,Integer)
 
 See also `FallingFactorial` and `RisingFactorial`.
 """
-Factorial(n::Integer) = factorial(big(n))::BigInt
-Factorial(n::Integer,k::Integer) = factorial(big(n),big(k))::BigInt
+function Factorial(n::Integer)::BigInt
+    if n < 0
+        throw(DomainError(n,"argument must be nonngative"))
+    end
+    if n <= 1
+        return big(1)
+    end
+    if _has(Factorial,n)
+        return _get(Factorial,n)
+    end
+    val = big(n) * Factorial(n-1)
+    _save(Factorial,n,val)
+    return val
+end
+
+function Factorial(n::Integer,k::Integer)::BigInt
+    if k>n
+        throw(DomainError((n,k),"$k cannot exceed $n"))
+    end
+    return div(Factorial(n),Factorial(k))
+end
+_make(Factorial,Integer)
 
 """
 `FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`
@@ -119,19 +139,13 @@ If `k>n` then `0` is returned.
 """
 function FallingFactorial(n::Integer, k::Integer)::BigInt
   if n<0 || k<0
-    throw(DomainError())
+    throw(DomainError((n,k)," arguments must be nonnegative"))
   end
   if k>n
     return big(0)
   end
-  if _has(FallingFactorial,(n,k))
-      return _get(FallingFactorial,(n,k))
-  end
-  val = Factorial(n,n-k)
-  _save(FallingFactorial,(n,k),val)
-  return val
+  return Factorial(n,n-k)
 end
-_make(FallingFactorial,Tuple{Integer,Integer})
 
 
 """
@@ -140,7 +154,7 @@ _make(FallingFactorial,Tuple{Integer,Integer})
 """
 function RisingFactorial(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
-    throw(DomainError())
+    throw(DomainError((n,k),"arguments must be nonnegative"))
   end
   if k==0
     return big(1)
@@ -159,7 +173,7 @@ end
 """
 function DoubleFactorial(n::Integer)::BigInt
   if n<0
-    throw(DomainError())
+    throw(DomainError(n,"argument must be nonnegative"))
   end
   if n==0 || n==1
     return big(1)
@@ -195,7 +209,8 @@ The result is `60` in both cases as these equal `6!/(1! 2! 3!)`.
 function Multinomial(v...)::BigInt
   nv = length(v)
   for i=1:nv
-    typeof(v[i])<:Integer || throw(DomainError())
+    typeof(v[i])<:Integer || throw(DomainError(v,"arguments must be integers"))
+    v[i]>=0 || throw(DomainError(v,"arguments must be nonngative"))
   end
   vals = [t for t in v]
   return Multinomial(vals)
@@ -205,7 +220,7 @@ Multinomial() = big(1)::BigInt
 
 function Multinomial(vals::Vector{T})::BigInt where T<:Integer
   if any([t<0 for t in vals])
-    throw(DomainError())
+    throw(DomainError(vals,"arguments must be nonnegative"))
   end
 
   nv = length(vals)
@@ -234,7 +249,7 @@ end
 `Catalan(n)` returns the `n`-th Catalan number.
 """
 function Catalan(n::Integer)::BigInt
-  n >= 0 || throw(DomainError())
+  n >= 0 || throw(DomainError(n,"argument must be nonnegative"))
   return div(Binomial(2n,n),n+1)
 end
 
@@ -245,7 +260,7 @@ an `n`-set that have no fixed point.
 """
 function Derangements(n::Integer)::BigInt
   if n<0
-    throw(DomainError())
+    throw(DomainError(n,"argument must be nonnegative"))
   end
   if n==0
     return big(1)
@@ -270,7 +285,7 @@ the number of partitions of an `n`-element set.
 """
 function Bell(n::Integer)::BigInt
   if n<0
-    throw(DomainError())
+    throw(DomainError(n,"argument must be nonnegative"))
   end
   if n==1 || n==0
     return big(1)
@@ -296,7 +311,7 @@ that is, the number of paritions of an `n`-set into `k`-parts."
 function Stirling2(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
-    throw(DomainError())
+    throw(DomainError((n,k),"arguments must be nonnegative"))
   end
 
   if k>n
@@ -334,7 +349,7 @@ in the poynomial `x(x-1)(x-2)...(x-n+1)`.
 function Stirling1(n::Integer,k::Integer)::BigInt
   # special cases
   if k<0 || n<0
-    throw(DomainError())
+    throw(DomainError((n,k),"arguments must be nonnegative"))
   end
 
   if k>n
@@ -372,7 +387,7 @@ _make(Stirling1,Tuple{Integer,Integer})
 """
 function IntPartitions(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
-    throw(DomainError())
+    throw(DomainError((n,k),"arguments must be nonnegative"))
   end
   # lots of special cases
   if k>n
@@ -398,7 +413,7 @@ end
 
 function IntPartitions(n::Integer)::BigInt
     if n<0
-        throw(DomainError())
+        throw(DomainError(n,"argument must be nonnegative"))
     end
     if _has(IntPartitions,n)
         return _get(IntPartitions,n)
@@ -419,7 +434,7 @@ into *distinct* parts.
 """
 function IntPartitionsDistinct(n::Integer,k::Integer)::BigInt
   if n<0 || k<0
-    throw(DomainError())
+    throw(DomainError((n,k),"arguments must be nonnegative"))
   end
   Ck2 = div(k*(k-1),2)
   if n < Ck2
@@ -430,7 +445,7 @@ end
 
 function IntPartitionsDistinct(n::Integer)::BigInt
   if n<0
-    throw(DomainError())
+    throw(DomainError(n,"argument must be nonngative"))
   end
   result = big(0)
   for k=1:n
@@ -449,7 +464,7 @@ this is the sequence
 1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
 """
 function Euler(n::Integer)::BigInt
-  n>=0 || throw(DomainError())
+  n>=0 || throw(DomainError(n,"argument must be nonngative"))
   if n%2 == 1
     return big(0)
   end
@@ -475,7 +490,7 @@ integers `1` through `n`, i.e.,
 `1^k + 2^k + 3^k + ... + n^k`.
 """
 function PowerSum(n::Integer, k::Integer)::BigInt
-  (n>=0 && k>=0) || throw(DomainError())
+  (n>=0 && k>=0) || throw(DomainError((n,k),"arguments must be nonngative"))
   # Base and special cases
   if n==0
     return big(0)
