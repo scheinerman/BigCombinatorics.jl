@@ -169,13 +169,13 @@ end
 
 """
 `DoubleFactorial(n)` returns `n!!`, i.e.,
-`n*(n-2)*...` with `0!! == 1!! == 1`.
+`n*(n-2)*...` with `(-1)!! == 0!! == 1!! == 1`.
 """
 function DoubleFactorial(n::Integer)::BigInt
-  if n<0
-    throw(DomainError(n,"argument must be nonnegative"))
+  if n<-1
+    throw(DomainError(n,"argument must be at least -1"))
   end
-  if n==0 || n==1
+  if n<2
     return big(1)
   end
   if _has(DoubleFactorial,n)
