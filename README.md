@@ -3,7 +3,6 @@
 
 [![Build Status](https://travis-ci.org/scheinerman/BigCombinatorics.jl.svg?branch=master)](https://travis-ci.org/scheinerman/BigCombinatorics.jl)
 
-[![Coverage Status](https://coveralls.io/repos/scheinerman/BigCombinatorics.jl/badge.svg?branch=master&service=github)](https://coveralls.io/github/scheinerman/BigCombinatorics.jl?branch=master)
 
 [![codecov.io](http://codecov.io/github/scheinerman/BigCombinatorics.jl/coverage.svg?branch=master)](http://codecov.io/github/scheinerman/BigCombinatorics.jl?branch=master)
 
@@ -84,6 +83,8 @@ and `IntPartitions(n,k)` returns the number of partitions of the integer
 *distinct* parts and `IntPartitionsDistinct(n,k)` returns the number of
 partitions of `n` into `k` *distinct* parts.
 + `Euler(n)` returns the `n`-th Euler number.
++ `Eulerian(n,k)` returns the number of permutations of `1:n` with `k`
+ascents.
 + `PowerSum(n,k)` returns the sum `1^k + 2^k + ... + n^k`.
 
 ## Implementation

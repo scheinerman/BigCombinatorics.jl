@@ -40,3 +40,5 @@ using Test
 @test PowerSum(10,3) == sum(k^3 for k=1:10)
 
 @test BigCombinatorics.cache_clear(Fibonacci)
+
+@test sum(Eulerian(10,k) for k=1:10) == Factorial(10)

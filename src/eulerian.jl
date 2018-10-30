@@ -1,5 +1,8 @@
 export Eulerian
-
+"""
+`Eulerian(n,k)` returns the number of permutations of `{1,2,...,n}`
+with `k` ascents.
+"""
 function Eulerian(n::Integer, k::Integer)::BigInt
     @assert (n>=0 && k>=0) "$n,$k must both be nonnegative"
 
@@ -29,7 +32,7 @@ function Eulerian(n::Integer, k::Integer)::BigInt
 
     val = (n-k+1)*Eulerian(n-1,k-1) + k*Eulerian(n-1,k)
     _save(Eulerian,(n,k),val)
-    return val 
+    return val
 end
 
 
