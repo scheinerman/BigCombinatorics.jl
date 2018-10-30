@@ -511,4 +511,7 @@ function PowerSum(n::Integer, k::Integer)::BigInt
 end
 _make(PowerSum,Tuple{Integer,Integer})
 
+
+include("eulerian.jl")
+
 end  #end of module
