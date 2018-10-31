@@ -10,7 +10,7 @@ function Eulerian(n::Integer, k::Integer)::BigInt
         return big(0)
     end
 
-    if k>n
+    if k>n || k==0
         return big(0)
     end
 
