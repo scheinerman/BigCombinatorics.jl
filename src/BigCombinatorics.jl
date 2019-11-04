@@ -42,7 +42,7 @@ function cache_report()
     total = 0
     for func in keys(_master_table)
         parse_func = split(string(func),".")
-        func_name = parse_func[2]
+        func_name = last(parse_func)  
         sz = length(_master_table[func])
         total += sz
         println("$sz\t$func_name")
