@@ -1,0 +1,14 @@
+name = "BigCombinatorics"
+uuid = "7b33fef7-ef1d-5d54-bb67-cf96d4c8a166"
+
+[deps]
+Combinatorics = "861a8166-3701-5b0c-9a16-15d98fcdc6aa"
+
+[compat]
+julia = "≥ 0.7.0"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
