@@ -1,7 +1,7 @@
 # BigCombinatorics
 
 
-[![Build Status](https://travis-ci.org/scheinerman/BigCombinatorics.jl.svg?branch=master)](https://travis-ci.org/scheinerman/BigCombinatorics.jl)
+[![Build Status](https://travis-ci.com/scheinerman/BigCombinatorics.jl.svg?branch=master)](https://travis-ci.com/scheinerman/BigCombinatorics.jl)
 
 
 [![codecov.io](http://codecov.io/github/scheinerman/BigCombinatorics.jl/coverage.svg?branch=master)](http://codecov.io/github/scheinerman/BigCombinatorics.jl?branch=master)
