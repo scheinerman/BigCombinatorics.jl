@@ -4,9 +4,6 @@
 [![Build Status](https://travis-ci.com/scheinerman/BigCombinatorics.jl.svg?branch=master)](https://travis-ci.com/scheinerman/BigCombinatorics.jl)
 
 
-[![codecov.io](http://codecov.io/github/scheinerman/BigCombinatorics.jl/coverage.svg?branch=master)](http://codecov.io/github/scheinerman/BigCombinatorics.jl?branch=master)
-
-
 
 This is an implementation of various combinatorial functions.
 These functions *always* return `BigInt` values. This convention
@@ -45,12 +42,12 @@ will not be hampered by this problem.
 
 ## Functions
 
-+ `Fibonacci(n)` returns the `n`-th Fibonacci number with `Fibonacci(0)==0`
-and `Fibonacci(1)==1`.
++ `Fibonacci(n)` returns the `n`-th Fibonacci number with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
 + `Factorial(n)` returns `n!` and `Factorial(n,k)` returns `n!/k!`.
 + `FallingFactorial(n,k)` returns `n*(n-1)*(n-2)*...*(n-k+1)`.
 + `RisingFactorial(n,k)` returns `n*(n+1)*(n+2)*...*(n+k-1)`.
 + `DoubleFactorial(n)` returns `n!!`.
++ `HyperFactorial(n)` returns `1^1 * 2^2 * ... * n^n`.
 + `Catalan(n)` returns the `n`-th Catalan number.
 + `Derangements(n)` returns the number of derangements of
 an `n`-element set.

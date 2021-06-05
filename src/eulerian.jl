@@ -1,16 +1,20 @@
 export Eulerian
 """
-`Eulerian(n,k)` returns the number of permutations of `{1,2,...,n}`
+    Eulerian(n,k)
+
+returns the number of permutations of `{1,2,...,n}`
 with `k` ascents.
+
+Not to be confused with `Euler`.
 """
 function Eulerian(n::Integer, k::Integer)::BigInt
-    @assert (n>=0 && k>=0) "$n,$k must both be nonnegative"
+    @assert (n >= 0 && k >= 0) "$n,$k must both be nonnegative"
 
-    if n==0
+    if n == 0
         return big(0)
     end
 
-    if k>n || k==0
+    if k > n || k == 0
         return big(0)
     end
 
@@ -18,22 +22,22 @@ function Eulerian(n::Integer, k::Integer)::BigInt
         return big(1)
     end
 
-    if k==n      # includes the case n=k=0
+    if k == n      # includes the case n=k=0
         return big(1)
     end
 
-    if k==1
+    if k == 1
         return big(1)
     end
 
-    if _has(Eulerian,(n,k))
-        return _get(Eulerian,(n,k))
+    if _has(Eulerian, (n, k))
+        return _get(Eulerian, (n, k))
     end
 
-    val = (n-k+1)*Eulerian(n-1,k-1) + k*Eulerian(n-1,k)
-    _save(Eulerian,(n,k),val)
+    val = (n - k + 1) * Eulerian(n - 1, k - 1) + k * Eulerian(n - 1, k)
+    _save(Eulerian, (n, k), val)
     return val
 end
 
 
-_make(Eulerian,Tuple{Integer,Integer})
+_make(Eulerian, Tuple{Integer,Integer})
