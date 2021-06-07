@@ -25,6 +25,7 @@ _initializers = Function[]
 
 function _do_initializers()
     for f in _initializers
+        println(f) # debug
         f()
     end
 end
@@ -137,18 +138,18 @@ function Fibonacci(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "argument must be nonngative"))
     end
-   
+
     if _has(Fibonacci, n)
         return _get(Fibonacci, n)
     end
 
     start = _max_arg(Fibonacci)
-    for m = start+1:n 
-        val = _get(Fibonacci,m-1) + _get(Fibonacci,m-2)
+    for m = start+1:n
+        val = _get(Fibonacci, m - 1) + _get(Fibonacci, m - 2)
         _save(Fibonacci, m, val)
     end
 
-    return _get(Fibonacci,n)
+    return _get(Fibonacci, n)
 end
 
 function _Fibonacci()
@@ -351,12 +352,12 @@ function Derangements(n::Integer)::BigInt
     end
 
     start = _max_arg(Derangements)
-    for m = start+1:n 
-        s = (m%2 == 0) ? 1 : -1
-        val = m * _get(Derangements,m-1) + s
-        _save(Derangements,m,val)
-    end 
-    return _get(Derangements,n)
+    for m = start+1:n
+        s = (m % 2 == 0) ? 1 : -1
+        val = m * _get(Derangements, m - 1) + s
+        _save(Derangements, m, val)
+    end
+    return _get(Derangements, n)
 end
 
 
@@ -379,21 +380,29 @@ function Bell(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "argument must be nonnegative"))
     end
-    if n == 1 || n == 0
-        return big(1)
-    end
+
     if _has(Bell, n)
         return _get(Bell, n)
     end
-    result = big(0)
-    for k = 0:n-1
-        result += Binomial(n - 1, k) * Bell(k)
-    end
-    _save(Bell, n, result)
-    return result
-end
-_make(Bell, Integer)
 
+    start = _max_arg(Bell) + 1
+    for m = start:n
+        val = big(0)
+        for k = 0:m-1
+            val += Binomial(m - 1, k) * Bell(k)
+        end
+        _save(Bell, m, val)
+    end
+
+    return _get(Bell, n)
+end
+
+function _Bell()
+    _make(Bell, Integer)
+    _save(Bell, 0, big(1))
+    _save(Bell, 1, big(1))
+end
+push!(_initializers, _Bell)
 
 """
     Stirling2(n,k)
