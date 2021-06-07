@@ -48,17 +48,31 @@ Fibonacci numbers (or factorials) up through `n`. This module saves the results 
 
 In some cases, the built-in Julia functions with similar names are sufficiently speedy that we don't bother saving the results, but rather simply wrap those functions in ours.
 
+For a single, one-time evaluation of a combinatorial function, the methods in `Combinatorics` are likely to be the best option. But for repeated calls to the same function, `BigCombinatorics` may perform better:
+```julia
+julia> using Combinatorics, BigCombinatorics
+
+julia> @time x = [bellnum(k) for k=1:1000];
+ 52.675060 seconds (333.34 M allocations: 62.504 GiB, 14.85% gc time)
+
+julia> @time y = [Bell(k) for k=1:1000];
+  4.061087 seconds (27.72 M allocations: 893.866 MiB, 3.42% gc time)
+
+julia> x == y
+true
+```
+
 ### Avoid recursive calls
 
 Functions such as factorial, Stirling numbers, and so forth obey nice recurrence relations that are mathematically elegant but can be computationally problematic. 
 
-When we compute values via these recurrence relations we always save previously computed results and thereby avoid combinatorial explosion. For univariate functions, we do not use recursive code and so we avoid stack overflow. 
+When we compute values via these recurrence relations we always save previously computed results and thereby avoid combinatorial explosion. For univariate functions, we do not use recursive code and so we avoid stack overflow. (Multivariate functions may still suffer from stack overflows.)
 
 
 
 ### Light weight
 
-This module is self-contained and does not rely on others. In particular, we use neither `Combinatorics` (which provides many of these functions, but with a different design philosopy) not `Memoize` (which also provides caching of previous results but does not give a way to delete stored values).
+This module is self-contained and does not rely on others. In particular, we use neither `Combinatorics` (which provides many of these functions, but with a different design philosopy) nor `Memoize` (which also provides caching of previous results but does not give a way to delete stored values).
 
 <hr/>
 
