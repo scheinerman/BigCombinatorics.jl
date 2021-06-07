@@ -53,10 +53,16 @@ For a single, one-time evaluation of a combinatorial function, the methods in `C
 julia> using Combinatorics, BigCombinatorics
 
 julia> @time x = [bellnum(k) for k=1:1000];
- 52.675060 seconds (333.34 M allocations: 62.504 GiB, 14.85% gc time)
+ 50.067243 seconds (333.34 M allocations: 62.504 GiB, 13.83% gc time)
 
 julia> @time y = [Bell(k) for k=1:1000];
-  4.061087 seconds (27.72 M allocations: 893.866 MiB, 3.42% gc time)
+  4.222006 seconds (28.25 M allocations: 914.731 MiB, 3.18% gc time, 3.78% compilation time)
+
+julia> @time x = [bellnum(k) for k=1:1000];  # second time is no faster
+ 53.210110 seconds (333.34 M allocations: 62.504 GiB, 14.18% gc time)
+
+julia> @time y = [Bell(k) for k=1:1000];   # values cached so much faster
+  0.000849 seconds (2.20 k allocations: 42.312 KiB)
 
 julia> x == y
 true
