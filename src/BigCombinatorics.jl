@@ -284,8 +284,6 @@ end
 push!(_initializers, _HyperFactorial)
 
 
-
-
 """
     Binomial(n,k)
 
@@ -653,7 +651,6 @@ function PowerSum(n::Integer, k::Integer)::BigInt
     return val
 end
 _make(PowerSum, Tuple{Integer,Integer})
-
 
 include("eulerian.jl")
 
