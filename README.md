@@ -43,10 +43,24 @@ will not be hampered by this problem.
 
 ### Remember everything
 
+When calculating the `n`-th Fibonnaci number (or `n!`), one implicitly calculates all the 
+Fibonacci numbers (or factorials) up through `n`. This module saves the results of all those calculations so that subsequent invocations of these functions use the previously stored values.
 
-### Avoid recursion
+In some cases, the built-in Julia functions with similar names are sufficiently speedy that we don't bother saving the results, but rather simply wrap those functions in ours.
+
+### Avoid recursive calls
+
+Functions such as factorial, Stirling numbers, and so forth obey nice recurrence relations that are mathematically elegant but can be computationally problematic. 
+
+When we compute values via these recurrence relations we always save previously computed results and thereby avoid combinatorial explosion. For univariate functions, we do not use recursive code and so we avoid stack overflow. 
 
 
+
+### Light weight
+
+This module is self-contained and does not rely on others. In particular, we use neither `Combinatorics` (which provides many of these functions, but with a different design philosopy) not `Memoize` (which also provides caching of previous results but does not give a way to delete stored values).
+
+<hr/>
 
 ## Functions
 
