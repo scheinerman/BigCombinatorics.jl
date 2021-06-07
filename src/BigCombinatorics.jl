@@ -10,24 +10,75 @@ export Bell, Stirling1, Stirling2
 export IntPartitions, IntPartitionsDistinct
 export Euler, PowerSum
 
+"""
+This is where we cache values already computed
+"""
 _master_table = Dict{Function,Dict}()
 
+"""
+This is a list of initializing functions. 
+
+Naming convention: `_Fibonacci` is the initializer for `Fibonacci`.
+"""
+_initializers = Function[]
+
+
+function _do_initializers()
+    for f in _initializers
+        f()
+    end
+end
+
+"""
+    _save(f::Function, x, val::BigInt)
+
+Save the computed value of `f` with argument(s) `x` and value `val`.
+"""
 function _save(f::Function, x, val::BigInt)
     d = _master_table[f]
     d[x] = val
     nothing
 end
 
+
+"""
+    _has(f::Function, x)
+
+Check if argument `x` for function `f` is already in the `_master_table`.
+"""
 function _has(f::Function, x)::Bool
     d = _master_table[f]
     return haskey(d, x)
 end
 
+"""
+    _max_arg(f::Function)
+
+Find the largest argument known for `f`. Note that `f` must be a function
+of just a single value.
+"""
+function _max_arg(f::Function)
+    tab = _master_table[f]
+    return maximum(keys(tab))
+end
+
+
+"""
+    _get(f::Function, x)
+
+Retrieve the function value `f(x)` from the `_master_table`.
+"""
 function _get(f::Function, x)::BigInt
     d = _master_table[f]
     return d[x]
 end
 
+
+"""
+    _make(f::Function, T::Type)
+
+Create an entry in the `_master_table` for the function `f`.
+"""
 function _make(f::Function, T::Type)
     _master_table[f] = Dict{T,BigInt}()
     nothing
@@ -67,6 +118,7 @@ function cache_clear(f::Function)::Bool
     for k in keys(tab)
         delete!(tab, k)
     end
+    _do_initializers()
     return true
 end
 
@@ -85,22 +137,26 @@ function Fibonacci(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "argument must be nonngative"))
     end
-    if n == 0
-        return big(0)
-    end
-    if n == 1
-        return big(1)
-    end
+   
     if _has(Fibonacci, n)
         return _get(Fibonacci, n)
     end
-    val = Fibonacci(n - 1) + Fibonacci(n - 2)
-    _save(Fibonacci, n, val)
-    return val
+
+    start = _max_arg(Fibonacci)
+    for m = start+1:n 
+        val = _get(Fibonacci,m-1) + _get(Fibonacci,m-2)
+        _save(Fibonacci, m, val)
+    end
+
+    return _get(Fibonacci,n)
 end
 
-
-_make(Fibonacci, Integer)
+function _Fibonacci()
+    _make(Fibonacci, Integer)
+    _save(Fibonacci, 0, big(0))
+    _save(Fibonacci, 1, big(1))
+end
+push!(_initializers, _Fibonacci)
 
 """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
@@ -113,15 +169,7 @@ function Factorial(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "argument must be nonngative"))
     end
-    if n <= 1
-        return big(1)
-    end
-    if _has(Factorial, n)
-        return _get(Factorial, n)
-    end
-    val = big(n) * Factorial(n - 1)
-    _save(Factorial, n, val)
-    return val
+    return factorial(big(n))
 end
 
 function Factorial(n::Integer, k::Integer)::BigInt
@@ -130,7 +178,6 @@ function Factorial(n::Integer, k::Integer)::BigInt
     end
     return div(Factorial(n), Factorial(k))
 end
-_make(Factorial, Integer)
 
 """
     FallingFactorial(n,k)
@@ -213,8 +260,6 @@ function HyperFactorial(n::Integer)::BigInt
     return val
 end
 _make(HyperFactorial, Integer)
-
-
 
 
 """
@@ -301,22 +346,28 @@ function Derangements(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "argument must be nonnegative"))
     end
-    if n == 0
-        return big(1)
-    end
-    if n == 1
-        return big(0)
-    end
     if _has(Derangements, n)
         return _get(Derangements, n)
     end
 
-    val = (n - 1) * (Derangements(n - 1) + Derangements(n - 2))
-    _save(Derangements, n, val)
-    return val
+    start = _max_arg(Derangements)
+    for m = start+1:n 
+        s = (m%2 == 0) ? 1 : -1
+        val = m * _get(Derangements,m-1) + s
+        _save(Derangements,m,val)
+    end 
+    return _get(Derangements,n)
 end
 
-_make(Derangements, Integer)
+
+function _Derangements()
+    _make(Derangements, Integer)
+    _save(Derangements, 0, big(1))
+    _save(Derangements, 1, big(0))
+end
+push!(_initializers, _Derangements)
+
+
 
 """
     Bell(n)
@@ -334,7 +385,6 @@ function Bell(n::Integer)::BigInt
     if _has(Bell, n)
         return _get(Bell, n)
     end
-    N1 = n - 1
     result = big(0)
     for k = 0:n-1
         result += Binomial(n - 1, k) * Bell(k)
@@ -564,5 +614,7 @@ _make(PowerSum, Tuple{Integer,Integer})
 
 
 include("eulerian.jl")
+
+_do_initializers()
 
 end  #end of module
