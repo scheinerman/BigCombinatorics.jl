@@ -263,7 +263,7 @@ function HyperFactorial(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "arument must be nonnegative"))
     end
-    
+
     if _has(HyperFactorial, n)
         return _get(HyperFactorial, n)
     end
@@ -272,7 +272,7 @@ function HyperFactorial(n::Integer)::BigInt
         val = (big(m))^m * _get(HyperFactorial, m - 1)
         _save(HyperFactorial, m, val)
     end
-    return _get(HyperFactorial,n)
+    return _get(HyperFactorial, n)
 end
 
 function _HyperFactorial()
@@ -373,8 +373,8 @@ function Derangements(n::Integer)::BigInt
         return _get(Derangements, n)
     end
 
-    start = _max_arg(Derangements)
-    for m = start+1:n
+    start = _max_arg(Derangements) + 1
+    for m = start:n
         s = (m % 2 == 0) ? 1 : -1
         val = m * _get(Derangements, m - 1) + s
         _save(Derangements, m, val)
