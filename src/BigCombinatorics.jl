@@ -25,7 +25,6 @@ _initializers = Function[]
 
 function _do_initializers()
     for f in _initializers
-        println(f) # debug
         f()
     end
 end
