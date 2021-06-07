@@ -140,6 +140,4 @@ The following functions can be used to manage the saved values.
 
 * `BigCombinatorics.cache_report()` prints out the number of values
 stored in the cache for each function.
-* `BigCombinatorics.cache_clear(func)` clears all values stored for
-a specific function.
 * `BigCombinatorics.cache_clear()` clears all values in the cache.

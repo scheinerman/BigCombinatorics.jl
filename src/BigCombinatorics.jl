@@ -104,13 +104,8 @@ function cache_report()
 end
 
 
-"""
-`BigCombinatorics.cache_clear(f)` clears the cached values for
-the function `f`. Returns `false` if `f` values are not cached.
 
-`BigCombinatorics.cache_clear()` clears all cached values.
-"""
-function cache_clear(f::Function)::Bool
+function _cache_clear(f::Function)::Bool
     if !haskey(_master_table, f)
         return false
     end
@@ -118,14 +113,20 @@ function cache_clear(f::Function)::Bool
     for k in keys(tab)
         delete!(tab, k)
     end
-    _do_initializers()
+
     return true
 end
 
+"""
+    BigCombinatorics.cache_clear()
+    
+Clears all cached values.
+"""
 function cache_clear()
     for f in keys(_master_table)
-        cache_clear(f)
+        _cache_clear(f)
     end
+    _do_initializers()
     true
 end
 
