@@ -161,6 +161,7 @@ push!(_initializers, _Fibonacci)
 
 """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
+
 `Factorial(n,k)` returns `n!/k!` (to be consistent with Julia's
 `factorial`.) Requires `0 <= k <= n`.
 
@@ -228,17 +229,30 @@ function DoubleFactorial(n::Integer)::BigInt
     if n < -1
         throw(DomainError(n, "argument must be at least -1"))
     end
-    if n < 2
-        return big(1)
-    end
     if _has(DoubleFactorial, n)
         return _get(DoubleFactorial, n)
     end
-    val = n * DoubleFactorial(n - 2)
-    _save(DoubleFactorial, n, val)
+
+    start = _max_arg(DoubleFactorial) + 1
+    for m = start:n
+        val = m * _get(DoubleFactorial, m - 2)
+        _save(DoubleFactorial, m, val)
+    end
+
+    return _get(DoubleFactorial, n)
+
     return val
 end
-_make(DoubleFactorial, Integer)
+
+function _DoubleFactorial()
+    _make(DoubleFactorial, Integer)
+    _save(DoubleFactorial, -1, big(1))
+    _save(DoubleFactorial, 0, big(1))
+    _save(DoubleFactorial, 1, big(1))
+end
+
+push!(_initializers, _DoubleFactorial)
+
 
 """
     HyperFactorial(n)
@@ -576,20 +590,30 @@ function Euler(n::Integer)::BigInt
     if n % 2 == 1
         return big(0)
     end
-    if n == 0
-        return big(1)
-    end
+
     if _has(Euler, n)
         return _get(Euler, n)
     end
 
+    start = _max_arg(Euler) + 2
 
-    last = div(n, 2) - 1
-    val = -sum([Binomial(n, 2k) * Euler(2k) for k = 0:last])
-    _save(Euler, n, val)
-    return val
+    for m = start:2:n
+        last = div(m, 2) - 1
+        val = -sum([Binomial(m, 2k) * Euler(2k) for k = 0:last])
+        _save(Euler, m, val)
+    end
+
+    return _get(Euler, n)
 end
-_make(Euler, Integer)
+
+function _Euler()
+    _make(Euler, Integer)
+    _save(Euler, 0, big(1))
+end
+
+push!(_initializers, _Euler)
+
+#_make(Euler, Integer)
 
 
 """

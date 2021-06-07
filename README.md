@@ -10,7 +10,10 @@ These functions *always* return `BigInt` values. This convention
 is signaled by the fact that these functions' names begin
 with a capital letter.
 
-## Rationale
+## Overview and Rationale
+
+
+### Always big
 
 If we want to calculate 20!, it's easy enough to do this:
 ```julia
@@ -37,6 +40,11 @@ We take a different approach. We shouldn't have to worry about how large
 our arguments may be before a combinatorial function overflows. Instead,
 let's assume the result is *always* of type `BigInt` so the calculation
 will not be hampered by this problem.
+
+### Remember everything
+
+
+### Avoid recursion
 
 
 
