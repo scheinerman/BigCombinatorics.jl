@@ -142,8 +142,8 @@ function Fibonacci(n::Integer)::BigInt
         return _get(Fibonacci, n)
     end
 
-    start = _max_arg(Fibonacci)
-    for m = start+1:n
+    start = _max_arg(Fibonacci) + 1
+    for m = start:n
         val = _get(Fibonacci, m - 1) + _get(Fibonacci, m - 2)
         _save(Fibonacci, m, val)
     end
@@ -263,17 +263,26 @@ function HyperFactorial(n::Integer)::BigInt
     if n < 0
         throw(DomainError(n, "arument must be nonnegative"))
     end
-    if n < 2
-        return big(1)
-    end
+    
     if _has(HyperFactorial, n)
         return _get(HyperFactorial, n)
     end
-    val = (big(n))^(big(n)) * HyperFactorial(n - 1)
-    _save(HyperFactorial, n, val)
-    return val
+    start = _max_arg(HyperFactorial) + 1
+    for m = start:n
+        val = (big(m))^m * _get(HyperFactorial, m - 1)
+        _save(HyperFactorial, m, val)
+    end
+    return _get(HyperFactorial,n)
 end
-_make(HyperFactorial, Integer)
+
+function _HyperFactorial()
+    _make(HyperFactorial, Integer)
+    _save(HyperFactorial, 0, big(1))
+    _save(HyperFactorial, 1, big(1))
+end
+push!(_initializers, _HyperFactorial)
+
+
 
 
 """
