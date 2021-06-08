@@ -624,7 +624,7 @@ function PowerSum(n::Integer, k::Integer)::BigInt
         return big(n)
     end
     if k == 1
-        return Binomial(n+1, 2)
+        return Binomial(n + 1, 2)
     end
     if _has(PowerSum, (n, k))
         return _get(PowerSum, (n, k))
