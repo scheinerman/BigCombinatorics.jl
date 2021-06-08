@@ -52,19 +52,21 @@ Stacktrace:
  [5] top-level scope
    @ REPL[25]:1
 ```
-However, this module can handle the calculation:
-```julia
-julia> using BigCombinatorics
 
-julia> Stirling1(30,1)
--8841761993739701954543616000000
-```
 
 
 We take a different approach. We shouldn't have to worry about how large
 our arguments may be before a combinatorial function overflows. Instead,
 let's assume the result is *always* of type `BigInt` so the calculation
 will not be hampered by this problem.
+
+For example:
+```julia
+julia> using BigCombinatorics
+
+julia> Stirling1(30,1)
+-8841761993739701954543616000000
+```
 
 ### Remember everything
 
@@ -93,7 +95,7 @@ julia> x == y
 true
 ```
 
-### Avoid recursive calls
+### Using recursion wisely
 
 Functions such as factorial, Stirling numbers, and so forth obey nice recurrence relations that are mathematically elegant but can be computationally problematic. 
 
