@@ -126,18 +126,52 @@ partitions of `n` into `k` *distinct* parts.
 ascents.
 + `PowerSum(n,k)` returns the sum `1^k + 2^k + ... + n^k`.
 
-## Implementation
+## Managing Stored Values
 
+For most of these functions we save the values we have computed and often values for smaller arguments. For example, when we compute `Fibonacci(10)` we have computed and saved the value of `Fibonacci(n)` for all values of `n` up to 10. 
 
-These function have nice recursive properties that we
-exploit to make the code as simple as possible.
-In many (but not all) of these functions we cache the result
-of the calculation to avoid combinatorial explosion in the
-recursion. In those cases, we don't compute the same result twice.
+**Calling one of these functions with no arguments reinitializes the table of stored values for that function.** Most of the stored values are lost.
 
+The function `BigCombinatorics.cache_clear()` reinitializes all the tables.
 
-The following functions can be used to manage the saved values.
+The function `BigCombinatorics.cache_report()` prints out the number of values
+stored  for each function. (Note that some functions don't save any values.)
+```julia
+julia> Bell(10)
+115975
 
-* `BigCombinatorics.cache_report()` prints out the number of values
-stored in the cache for each function.
-* `BigCombinatorics.cache_clear()` clears all values in the cache.
+julia> Fibonacci(20)
+6765
+
+julia> BigCombinatorics.cache_report()
+2       Derangements
+0       Stirling2
+0       Eulerian
+1       Euler
+3       DoubleFactorial
+0       Stirling1
+0       PowerSum
+2       HyperFactorial
+11      Bell
+0       IntPartitions
+21      Fibonacci
+
+40      Total entries
+
+julia> Fibonacci()
+
+julia> BigCombinatorics.cache_report()
+2       Derangements
+0       Stirling2
+0       Eulerian
+1       Euler
+3       DoubleFactorial
+0       Stirling1
+0       PowerSum
+2       HyperFactorial
+11      Bell
+0       IntPartitions
+2       Fibonacci
+
+21      Total entries
+```

@@ -1,5 +1,6 @@
 module BigCombinatorics
 
+using Base: _mask1_uint128
 using Combinatorics
 
 export Fibonacci
@@ -15,16 +16,9 @@ This is where we cache values already computed
 """
 _master_table = Dict{Function,Dict}()
 
-"""
-This is a list of initializing functions. 
-
-Naming convention: `_Fibonacci` is the initializer for `Fibonacci`.
-"""
-_initializers = Function[]
-
-
 function _do_initializers()
-    for f in _initializers
+    for f in keys(_master_table)
+        println(f)  # debug
         f()
     end
 end
@@ -105,17 +99,6 @@ end
 
 
 
-function _cache_clear(f::Function)::Bool
-    if !haskey(_master_table, f)
-        return false
-    end
-    tab = _master_table[f]
-    for k in keys(tab)
-        delete!(tab, k)
-    end
-
-    return true
-end
 
 """
     BigCombinatorics.cache_clear()
@@ -124,10 +107,9 @@ Clears all cached values.
 """
 function cache_clear()
     for f in keys(_master_table)
-        _cache_clear(f)
+        f()
     end
-    _do_initializers()
-    true
+    nothing
 end
 
 """
@@ -152,12 +134,12 @@ function Fibonacci(n::Integer)::BigInt
     return _get(Fibonacci, n)
 end
 
-function _Fibonacci()
+function Fibonacci()
     _make(Fibonacci, Integer)
     _save(Fibonacci, 0, big(0))
     _save(Fibonacci, 1, big(1))
 end
-push!(_initializers, _Fibonacci)
+Fibonacci()
 
 """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
@@ -244,14 +226,13 @@ function DoubleFactorial(n::Integer)::BigInt
     return val
 end
 
-function _DoubleFactorial()
+function DoubleFactorial()
     _make(DoubleFactorial, Integer)
     _save(DoubleFactorial, -1, big(1))
     _save(DoubleFactorial, 0, big(1))
     _save(DoubleFactorial, 1, big(1))
 end
-
-push!(_initializers, _DoubleFactorial)
+DoubleFactorial()
 
 
 """
@@ -276,12 +257,12 @@ function HyperFactorial(n::Integer)::BigInt
     return _get(HyperFactorial, n)
 end
 
-function _HyperFactorial()
+function HyperFactorial()
     _make(HyperFactorial, Integer)
     _save(HyperFactorial, 0, big(1))
     _save(HyperFactorial, 1, big(1))
 end
-push!(_initializers, _HyperFactorial)
+HyperFactorial()
 
 
 """
@@ -382,12 +363,12 @@ function Derangements(n::Integer)::BigInt
 end
 
 
-function _Derangements()
+function Derangements()
     _make(Derangements, Integer)
     _save(Derangements, 0, big(1))
     _save(Derangements, 1, big(0))
 end
-push!(_initializers, _Derangements)
+Derangements()
 
 
 
@@ -418,12 +399,12 @@ function Bell(n::Integer)::BigInt
     return _get(Bell, n)
 end
 
-function _Bell()
+function Bell()
     _make(Bell, Integer)
     _save(Bell, 0, big(1))
     _save(Bell, 1, big(1))
 end
-push!(_initializers, _Bell)
+Bell()
 
 """
     Stirling2(n,k)
@@ -461,7 +442,10 @@ function Stirling2(n::Integer, k::Integer)::BigInt
     _save(Stirling2, (n, k), val)
     return val
 end
-_make(Stirling2, Tuple{Integer,Integer})
+function Stirling2()
+    _make(Stirling2, Tuple{Integer,Integer})
+end
+Stirling2()
 
 
 """
@@ -499,10 +483,10 @@ function Stirling1(n::Integer, k::Integer)::BigInt
     _save(Stirling1, (n, k), val)
     return val
 end
-
-_make(Stirling1, Tuple{Integer,Integer})
-
-
+function Stirling1()
+    _make(Stirling1, Tuple{Integer,Integer})
+end
+Stirling1()
 
 """
 `IntPartitions(n)` is the number of partitions of the integer `n`.
@@ -547,8 +531,10 @@ function IntPartitions(n::Integer)::BigInt
     _save(IntPartitions, n, val)
     return val
 end
-
-_make(IntPartitions, Union{Tuple{Integer,Integer},Integer})
+function IntPartitions()
+    _make(IntPartitions, Union{Tuple{Integer,Integer},Integer})
+end
+IntPartitions()
 
 """
 `IntPartitionsDistinct(n,k)` is the number of partitions of
@@ -613,14 +599,12 @@ function Euler(n::Integer)::BigInt
     return _get(Euler, n)
 end
 
-function _Euler()
+function Euler()
     _make(Euler, Integer)
     _save(Euler, 0, big(1))
 end
+Euler()
 
-push!(_initializers, _Euler)
-
-#_make(Euler, Integer)
 
 
 """
@@ -650,10 +634,55 @@ function PowerSum(n::Integer, k::Integer)::BigInt
     _save(PowerSum, (n, k), val)
     return val
 end
-_make(PowerSum, Tuple{Integer,Integer})
+function PowerSum()
+    _make(PowerSum, Tuple{Integer,Integer})
+end
+PowerSum()
 
-include("eulerian.jl")
+export Eulerian
+"""
+    Eulerian(n,k)
 
-_do_initializers()
+returns the number of permutations of `{1,2,...,n}`
+with `k` ascents.
+
+Not to be confused with `Euler`.
+"""
+function Eulerian(n::Integer, k::Integer)::BigInt
+    @assert (n >= 0 && k >= 0) "$n,$k must both be nonnegative"
+
+    if n == 0
+        return big(0)
+    end
+
+    if k > n || k == 0
+        return big(0)
+    end
+
+    if n < 2
+        return big(1)
+    end
+
+    if k == n      # includes the case n=k=0
+        return big(1)
+    end
+
+    if k == 1
+        return big(1)
+    end
+
+    if _has(Eulerian, (n, k))
+        return _get(Eulerian, (n, k))
+    end
+
+    val = (n - k + 1) * Eulerian(n - 1, k - 1) + k * Eulerian(n - 1, k)
+    _save(Eulerian, (n, k), val)
+    return val
+end
+function Eulerian()
+    _make(Eulerian, Tuple{Integer,Integer})
+end
+Eulerian()
+
 
 end  #end of module
