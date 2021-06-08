@@ -6,7 +6,7 @@ export Binomial, Catalan
 export Derangements, MultiChoose, Multinomial
 export Bell, Stirling1, Stirling2
 export IntPartitions, IntPartitionsDistinct
-export Euler, PowerSum
+export Euler, PowerSum, Menage
 
 """
 This is where we cache values already computed
@@ -106,6 +106,7 @@ end
 """
 `Fibonacci(n)` returns the `n`-th Fibonacci number.
 We begin with `Fibonacci(0)==0` and `Fibonacci(1)==1`.
+See https://oeis.org/A000045
 """
 function Fibonacci(n::Integer)::BigInt
     if n < 0
@@ -134,6 +135,7 @@ Fibonacci()
 
 """
 `Factorial(n)` returns `n!` for nonnegative integers `n`.
+See https://oeis.org/A000142 
 
 `Factorial(n,k)` returns `n!/k!` (to be consistent with Julia's
 `factorial`.) Requires `0 <= k <= n`.
@@ -197,6 +199,7 @@ end
     DoubleFactorial(n)
 
 returns `n!!`, i.e., `n*(n-2)*...` with `(-1)!! == 0!! == 1!! == 1`.
+See https://oeis.org/A006882
 """
 function DoubleFactorial(n::Integer)::BigInt
     if n < -1
@@ -213,8 +216,6 @@ function DoubleFactorial(n::Integer)::BigInt
     end
 
     return _get(DoubleFactorial, n)
-
-    return val
 end
 
 function DoubleFactorial()
@@ -231,6 +232,7 @@ DoubleFactorial()
 
 returns the hyperfactorial of `n`, that is 
 `1^1 * 2^2 * 3^3 * ... * n^n`.
+See https://oeis.org/A002109
 """
 function HyperFactorial(n::Integer)::BigInt
     if n < 0
@@ -261,6 +263,7 @@ HyperFactorial()
 
 returns the binomial coefficient `n`-choose-`k`.
 This is the number of `k`-element subsets of an `n`-element set.
+See https://oeis.org/A007318
 """
 Binomial(n::Integer, k::Integer) = binomial(big(n), big(k))::BigInt
 
@@ -322,7 +325,8 @@ end
 """
     Catalan(n)
 
-returns the `n`-th Catalan number.
+returns the `n`-th Catalan number. 
+See https://oeis.org/A000108
 """
 function Catalan(n::Integer)::BigInt
     n >= 0 || throw(DomainError(n, "argument must be nonnegative"))
@@ -335,6 +339,7 @@ end
 
 returns the number of permutations of
 an `n`-set that have no fixed point.
+See https://oeis.org/A000166
 """
 function Derangements(n::Integer)::BigInt
     if n < 0
@@ -368,6 +373,7 @@ Derangements()
 
 gives the `n`-th Bell number, that is,
 the number of partitions of an `n`-element set.
+See https://oeis.org/A000110
 """
 function Bell(n::Integer)::BigInt
     if n < 0
@@ -402,6 +408,7 @@ Bell()
 
 gives the Stirling number of the second kind,
 that is, the number of paritions of an `n`-set into `k`-parts."
+See https://oeis.org/A008277
 """
 function Stirling2(n::Integer, k::Integer)::BigInt
     # special cases
@@ -445,6 +452,7 @@ Stirling2()
 gives the (signed) Stirling number
 of the first kind, that is, the coefficient of `x^k`
 in the poynomial `x(x-1)(x-2)...(x-n+1)`.
+See https://oeis.org/A008275
 """
 function Stirling1(n::Integer, k::Integer)::BigInt
     # special cases
@@ -481,6 +489,7 @@ Stirling1()
 
 """
 `IntPartitions(n)` is the number of partitions of the integer `n`.
+See https://oeis.org/A000041
 
 `IntPartitions(n,k)` is the number of partitions of the integer
 `n` with exactly `k` (nonzero) parts.
@@ -565,7 +574,8 @@ end
 
 returns the `n`-th Euler number. Starting with `n=0`
 this is the sequence
-1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on.
+1, 0, -1, 0, 5, 0, -61, 0, 1385 and so on. 
+See https://oeis.org/A122045
 
 Not to be confused with `Eulerian`.
 """
@@ -635,7 +645,7 @@ export Eulerian
     Eulerian(n,k)
 
 returns the number of permutations of `{1,2,...,n}`
-with `k` ascents.
+with `k` ascents. See https://oeis.org/A008292
 
 Not to be confused with `Euler`.
 """
@@ -675,5 +685,39 @@ function Eulerian()
 end
 Eulerian()
 
+"""
+    Menage(n)
+
+Number of solutions to the Menage problem with `n` male/female couples. 
+See https://oeis.org/A059375 
+"""
+function Menage(n::Int)::BigInt
+    if n < 0
+        throw(DomainError(n, "Argument must be nonnegative"))
+    end
+    if _has(Menage, n)
+        return _get(Menage, n)
+    end
+    start = _max_arg(Menage) + 1
+    for m = start:n
+        s = (m % 2 == 0) ? -1 : 1
+        a1 = _get(Menage, m - 1) ÷ (2 * Factorial(m - 1))
+        a2 = _get(Menage, m - 2) ÷ (2 * Factorial(m - 2))
+
+        am = m * a1 + (m * a2 + 4s) ÷ (m - 2)
+        val = 2 * Factorial(m) * am
+
+        _save(Menage, m, val)
+    end
+    return _get(Menage, n)
+end
+function Menage()
+    _make(Menage, Int)
+    _save(Menage, 0, big(1))
+    _save(Menage, 1, big(0))
+    _save(Menage, 2, big(0))
+    _save(Menage, 3, big(12))
+end
+Menage()
 
 end  #end of module

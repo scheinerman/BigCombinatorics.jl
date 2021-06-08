@@ -168,6 +168,7 @@ partitions of `n` into `k` *distinct* parts.
 + `Eulerian(n,k)` returns the number of permutations of `1:n` with `k`
 ascents.
 + `PowerSum(n,k)` returns the sum `1^k + 2^k + ... + n^k`.
++ `Menage(n)` returns the number of solutions to the Menage problem with `n` male/female couples. 
 
 ## Managing Stored Values
 

@@ -63,4 +63,12 @@ end
     BigCombinatorics.cache_clear()
     @test PowerSum(10, 3) == sum(k^3 for k = 1:10)
     @test PowerSum(100, 1) == sum(1:100)
+
+    n = 10
+    # Test Menage recursion by Touchard's formula
+    T =
+        2 *
+        Factorial(n) *
+        sum((-1)^k * 2n * Binomial(2n - k, k) * Factorial(n - k) ÷ (2n - k) for k = 0:n)
+    @test T == Menage(n)
 end
