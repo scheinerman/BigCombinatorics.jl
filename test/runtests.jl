@@ -38,6 +38,7 @@ using Test
 @test Euler(12) == 2702765
 
 @test PowerSum(10, 3) == sum(k^3 for k = 1:10)
+@test PowerSum(100, 1) == (100*101)÷2
 
 BigCombinatorics.cache_clear()
 
