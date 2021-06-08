@@ -1,8 +1,6 @@
 # BigCombinatorics
 
-
 [![Build Status](https://travis-ci.com/scheinerman/BigCombinatorics.jl.svg?branch=master)](https://travis-ci.com/scheinerman/BigCombinatorics.jl)
-
 
 
 This is an implementation of various combinatorial functions.
@@ -35,6 +33,33 @@ we could resolve this problem this way:
 julia> factorial(big(100))
 93326215443944152681699238856266700490715968264381621468592963895217599993229915608941463976156518286253697920827223758251185210916864000000000000000000000000
 ```
+
+This limitation on factorials causes problems for functions such as `stirlings1` in the `Combinatorics` package:
+```julia
+julia> using Combinatorics
+
+julia> stirlings1(30,1)
+ERROR: OverflowError: 29 is too large to look up in the table; consider using `factorial(big(29))` instead
+Stacktrace:
+ [1] factorial_lookup
+   @ ./combinatorics.jl:19 [inlined]
+ [2] factorial
+   @ ./combinatorics.jl:27 [inlined]
+ [3] stirlings1(n::Int64, k::Int64, signed::Bool)
+   @ Combinatorics ~/.julia/packages/Combinatorics/Udg6X/src/numbers.jl:142
+ [4] stirlings1(n::Int64, k::Int64)
+   @ Combinatorics ~/.julia/packages/Combinatorics/Udg6X/src/numbers.jl:129
+ [5] top-level scope
+   @ REPL[25]:1
+```
+However, this module can handle the calculation:
+```julia
+julia> using BigCombinatorics
+
+julia> Stirling1(30,1)
+-8841761993739701954543616000000
+```
+
 
 We take a different approach. We shouldn't have to worry about how large
 our arguments may be before a combinatorial function overflows. Instead,
@@ -72,8 +97,24 @@ true
 
 Functions such as factorial, Stirling numbers, and so forth obey nice recurrence relations that are mathematically elegant but can be computationally problematic. 
 
-When we compute values via these recurrence relations we always save previously computed results and thereby avoid combinatorial explosion. For univariate functions, we do not use recursive code and so we avoid stack overflow. (Multivariate functions may still suffer from stack overflows.)
+When we compute values via these recurrence relations we always save previously computed results and thereby avoid combinatorial explosion. For example:
+```julia
+julia> using Combinatorics, BigCombinatorics
 
+julia> @time stirlings2(34,17)
+  5.532814 seconds
+1482531184316650855  # this is incorrect because arithmetic was done with Int64 values
+
+julia> @time Stirling2(34,17)
+  0.000920 seconds (3.69 k allocations: 115.836 KiB)
+118144018577011378596484455
+
+julia> @time Stirling2(34,17)   # second call is even faster because value was cached
+  0.000011 seconds (2 allocations: 64 bytes)
+118144018577011378596484455
+```
+
+For univariate functions, we do not use recursive code and so we avoid stack overflow. (Multivariate functions may still suffer from stack overflows.)
 
 
 ### Light weight

@@ -1,8 +1,5 @@
 module BigCombinatorics
 
-using Base: _mask1_uint128
-using Combinatorics
-
 export Fibonacci
 export Factorial, DoubleFactorial, FallingFactorial, RisingFactorial, HyperFactorial
 export Binomial, Catalan
@@ -16,12 +13,6 @@ This is where we cache values already computed
 """
 _master_table = Dict{Function,Dict}()
 
-function _do_initializers()
-    for f in keys(_master_table)
-        println(f)  # debug
-        f()
-    end
-end
 
 """
     _save(f::Function, x, val::BigInt)
