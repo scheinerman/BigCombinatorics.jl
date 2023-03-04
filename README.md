@@ -142,7 +142,7 @@ of an `n`-element set.
 *multisets* that can be formed using the elements of
 an `n`-element set. **Warning**: This is not the same
 as `Multinomial`.
-+ `Multnomial(vals)` returns the multinomial coefficient where
++ `Multinomial(vals)` returns the multinomial coefficient where
 the top index is the sum of `vals`. Here, `vals` may either be a
 vector of integers or a comma separated list of arguments.
 In other words, both `Multinomial([3,3,3])` and `Multinomial(3,3,3)`
