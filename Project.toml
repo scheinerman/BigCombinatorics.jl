@@ -1,6 +1,6 @@
 name = "BigCombinatorics"
 uuid = "7b33fef7-ef1d-5d54-bb67-cf96d4c8a166"
-version = "0.3.5"
+version = "0.3.6"
 
 [deps]
 
